@@ -15,8 +15,8 @@ import java.util.Optional;
  *
  * @author victorchu
  */
-public class RegexExpTreePrinter implements RegexExpVisitor<Object, Pair<RegexExpTreePrinter.PrintStackContext, Boolean>> {
-    private static final RegexExpTreePrinter INSTANCE = new RegexExpTreePrinter();
+public class RegexExpTreeFormatter implements RegexExpVisitor<Object, Pair<RegexExpTreeFormatter.PrintStackContext, Boolean>> {
+    private static final RegexExpTreeFormatter INSTANCE = new RegexExpTreeFormatter();
 
     public static String print(RegexExp node) {
         PrintStackContext context = new PrintStackContext();
@@ -27,7 +27,7 @@ public class RegexExpTreePrinter implements RegexExpVisitor<Object, Pair<RegexEx
     @Override
     public Object visitChar(CharExp node, Pair<PrintStackContext, Boolean> context) {
         context.getLeft().push(node, context.getRight());
-        context.getLeft().sb.append(context.getLeft().peek().get().toString());
+        context.getLeft().peek().ifPresent(x->context.getLeft().append(x));
         context.getLeft().pop();
 
         return null;
@@ -36,7 +36,7 @@ public class RegexExpTreePrinter implements RegexExpVisitor<Object, Pair<RegexEx
     @Override
     public Object visitConcat(ConcatExp node, Pair<PrintStackContext, Boolean> context) {
         context.getLeft().push(node, context.getRight());
-        context.getLeft().peek().ifPresent(x->context.getLeft().sb.append(x));
+        context.getLeft().peek().ifPresent(x->context.getLeft().append(x));
         process(node.getLeft(), Pair.of(context.getLeft(), false));
         process(node.getRight(), Pair.of(context.getLeft(), true));
         context.getLeft().pop();
@@ -46,7 +46,7 @@ public class RegexExpTreePrinter implements RegexExpVisitor<Object, Pair<RegexEx
     @Override
     public Object visitOr(OrExp node, Pair<PrintStackContext, Boolean> context) {
         context.getLeft().push(node, context.getRight());
-        context.getLeft().peek().ifPresent(x->context.getLeft().sb.append(x));
+        context.getLeft().peek().ifPresent(x->context.getLeft().append(x));
         process(node.getLeft(), Pair.of(context.getLeft(), false));
         process(node.getRight(), Pair.of(context.getLeft(), true));
         context.getLeft().pop();
@@ -56,7 +56,7 @@ public class RegexExpTreePrinter implements RegexExpVisitor<Object, Pair<RegexEx
     @Override
     public Object visitRepeat(RepeatExp node, Pair<PrintStackContext, Boolean> context) {
         context.getLeft().push(node, context.getRight());
-        context.getLeft().peek().ifPresent(x->context.getLeft().sb.append(x));
+        context.getLeft().peek().ifPresent(x->context.getLeft().append(x));
         process(node.getInner(), Pair.of(context.getLeft(), true));
         context.getLeft().pop();
         return null;
@@ -70,6 +70,10 @@ public class RegexExpTreePrinter implements RegexExpVisitor<Object, Pair<RegexEx
         public PrintStackContext() {
             stack = new LinkedList<>();
             sb = new StringBuilder();
+        }
+
+        public void append(Object s){
+            sb.append(s);
         }
 
         public void push(RegexExp node, boolean last) {

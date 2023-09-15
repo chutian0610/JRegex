@@ -1,52 +1,28 @@
 package info.victorchu.jregex.ast;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * 重复 expression.
  *
  * @author victorchutian
  */
+@Builder
+@Getter
+@Setter
 public class RepeatExp extends RegexExp {
-    public RepeatExp() {
+    public RepeatExp(RegexExp inner) {
         super(NodeType.REGEXP_REPEAT);
+        this.inner = inner;
     }
 
     private RegexExp inner;
-
-    public RegexExp getInner() {
-        return inner;
-    }
-
-    public void setInner(RegexExp inner) {
-        this.inner = inner;
-    }
 
     @Override
     public <T, C> T accept(RegexExpVisitor<T, C> visitor, C context) {
         return visitor.visitRepeat(this, context);
     }
 
-    /**
-     * builder for  RegexRepeatNode
-     */
-    public static final class RegexRepeatNodeBuilder {
-        private RegexExp innerNode;
-
-        private RegexRepeatNodeBuilder() {
-        }
-
-        public static RegexRepeatNodeBuilder aRegexRepeatNode() {
-            return new RegexRepeatNodeBuilder();
-        }
-
-        public RegexRepeatNodeBuilder withInnerNode(RegexExp innerNode) {
-            this.innerNode = innerNode;
-            return this;
-        }
-
-        public RepeatExp build() {
-            RepeatExp regexRepeatNode = new RepeatExp();
-            regexRepeatNode.setInner(innerNode);
-            return regexRepeatNode;
-        }
-    }
 }

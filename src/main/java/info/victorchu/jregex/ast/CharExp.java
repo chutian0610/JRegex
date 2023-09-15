@@ -1,53 +1,30 @@
 package info.victorchu.jregex.ast;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /**
  * 字符 expression.
  *
  * @author victorchutian
  */
+@Builder
+@Getter
+@Setter
 public class CharExp extends RegexExp {
-    public CharExp() {
+    public CharExp(Character character) {
         super(NodeType.REGEXP_CHAR);
+        this.character = character;
     }
 
     private Character character;
 
-    public Character getCharacter() {
-        return character;
-    }
-
-    public void setCharacter(Character character) {
-        this.character = character;
-    }
-
     @Override
     public <T, C> T accept(RegexExpVisitor<T, C> visitor, C context) {
         return visitor.visitChar(this, context);
-    }
-
-    /**
-     * builder for  RegexCharNode
-     */
-    public static final class RegexCharNodeBuilder {
-        private Character character;
-
-        private RegexCharNodeBuilder() {
-        }
-
-        public static RegexCharNodeBuilder aRegexCharNode() {
-            return new RegexCharNodeBuilder();
-        }
-
-        public RegexCharNodeBuilder withCharacter(Character character) {
-            this.character = character;
-            return this;
-        }
-
-        public CharExp build() {
-            CharExp regexCharNode = new CharExp();
-            regexCharNode.setCharacter(character);
-            return regexCharNode;
-        }
     }
 }
 

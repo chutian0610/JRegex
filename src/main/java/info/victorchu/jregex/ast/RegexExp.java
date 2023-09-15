@@ -1,23 +1,18 @@
 package info.victorchu.jregex.ast;
 
+import lombok.Getter;
+
 /**
  * Regex expression 的抽象父类
  *
  * @author victorchutian
  */
+@Getter
 public abstract class RegexExp {
 
     protected NodeType nodeType;
 
     public RegexExp(NodeType nodeType) {
-        this.nodeType = nodeType;
-    }
-
-    public NodeType getNodeType() {
-        return nodeType;
-    }
-
-    public void setNodeType(NodeType nodeType) {
         this.nodeType = nodeType;
     }
 

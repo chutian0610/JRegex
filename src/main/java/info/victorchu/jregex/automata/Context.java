@@ -11,13 +11,16 @@ import java.util.stream.Collectors;
 
 /**
  * @author victorchu
- * @date 2023/9/12 20:45
+ * 
  */
 public class Context {
     /**
-     * state id generator
+     * NFA state id generator
      */
     private AtomicInteger NEXT_NFA_ID;
+    /**
+     * DFA state id generator
+     */
     private AtomicInteger NEXT_DFA_ID;
 
     private final Map<Integer, NFAState> nfaStateMap = new HashMap<>();

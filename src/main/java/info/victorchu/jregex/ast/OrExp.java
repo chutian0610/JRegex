@@ -1,69 +1,30 @@
 package info.victorchu.jregex.ast;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * or expression.
  *
  * @author victorchutian
  */
+
+@Builder
+@Getter
+@Setter
 public class OrExp extends RegexExp {
+    public OrExp(RegexExp left,RegexExp right) {
+        super(NodeType.REGEX_OR);
+        this.left = left;
+        this.right = right;
+    }
 
     private RegexExp left;
     private RegexExp right;
 
-    public RegexExp getLeft() {
-        return left;
-    }
-
-    public void setLeft(RegexExp left) {
-        this.left = left;
-    }
-
-    public RegexExp getRight() {
-        return right;
-    }
-
-    public void setRight(RegexExp right) {
-        this.right = right;
-    }
-
-    public OrExp() {
-        super(NodeType.REGEX_OR);
-    }
-
     @Override
     public <T, C> T accept(RegexExpVisitor<T, C> visitor, C context) {
         return visitor.visitOr(this, context);
-    }
-
-    /**
-     * builder for  RegexOrNode
-     */
-    public static final class RegexOrNodeBuilder {
-        private RegexExp left;
-        private RegexExp right;
-
-        private RegexOrNodeBuilder() {
-        }
-
-        public static RegexOrNodeBuilder aRegexOrNode() {
-            return new RegexOrNodeBuilder();
-        }
-
-        public RegexOrNodeBuilder withLeft(RegexExp left) {
-            this.left = left;
-            return this;
-        }
-
-        public RegexOrNodeBuilder withRight(RegexExp right) {
-            this.right = right;
-            return this;
-        }
-
-        public OrExp build() {
-            OrExp regexOrNode = new OrExp();
-            regexOrNode.setLeft(left);
-            regexOrNode.setRight(right);
-            return regexOrNode;
-        }
     }
 }

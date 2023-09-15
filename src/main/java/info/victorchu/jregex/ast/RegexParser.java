@@ -106,7 +106,7 @@ public class RegexParser {
     private RegexExp parseRegex() {
         RegexExp regexExp = parseUnionExp();
         if (matchChar('|')) {
-            return OrExp.RegexOrNodeBuilder.aRegexOrNode().withLeft(regexExp).withRight(parseUnionExp()).build();
+            return OrExp.builder().left(regexExp).right(parseUnionExp()).build();
         }
         return regexExp;
     }
@@ -114,7 +114,7 @@ public class RegexParser {
     private RegexExp parseUnionExp() {
         RegexExp regexExp = parseConcatExp();
         if (notEnd() && !peek("|)")) {
-            return ConcatExp.RegexConcatNodeBuilder.aRegexConcatNode().withLeft(regexExp).withRight(parseUnionExp()).build();
+            return ConcatExp.builder().left(regexExp).right(parseUnionExp()).build();
         }
         return regexExp;
     }
@@ -122,7 +122,7 @@ public class RegexParser {
     private RegexExp parseConcatExp() {
         RegexExp regexExp = parseRepeatExp();
         if (matchChar('*')) {
-            return RepeatExp.RegexRepeatNodeBuilder.aRegexRepeatNode().withInnerNode(regexExp).build();
+            return RepeatExp.builder().inner(regexExp).build();
         }
         return regexExp;
     }
@@ -142,7 +142,7 @@ public class RegexParser {
 
     private RegexExp parseCharExp() {
         matchChar('\\');
-        return CharExp.RegexCharNodeBuilder.aRegexCharNode().withCharacter(next()).build();
+        return CharExp.builder().character(next()).build();
     }
 }
 

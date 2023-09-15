@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author victorchu
- * @date 2023/9/13 16:13
+ * 
  */
 public class DFAState {
     protected boolean accept;
@@ -27,7 +27,7 @@ public class DFAState {
     /**
      * DFA的状态变更是确定的
      */
-    protected final Map<Transition, DFAState> transitions;
+    protected final Map<Edge, DFAState> transitions;
 
     private final Set<DFAState> dfaSets;
 
@@ -56,26 +56,26 @@ public class DFAState {
         return !dfaSets.isEmpty();
     }
 
-    public void addTransition(Transition transition, DFAState target) {
-        transitions.put(transition, target);
+    public void addTransition(Edge edge, DFAState target) {
+        transitions.put(edge, target);
     }
 
-    public boolean containTransition(Transition transition) {
-        return transitions.containsKey(transition);
-    }
-
-    @Nonnull
-    public Optional<DFAState> getToStateOfTransition(Transition transition) {
-        return Optional.ofNullable(transitions.get(transition));
+    public boolean containTransition(Edge edge) {
+        return transitions.containsKey(edge);
     }
 
     @Nonnull
-    public Set<Transition> getAllTransition() {
+    public Optional<DFAState> getToStateOfTransition(Edge edge) {
+        return Optional.ofNullable(transitions.get(edge));
+    }
+
+    @Nonnull
+    public Set<Edge> getAllTransition() {
         return transitions.keySet();
     }
 
     @Nonnull
-    public List<Transition> getSortedAllTransition() {
+    public List<Edge> getSortedAllTransition() {
         return transitions.keySet().stream().map(x -> {
             Integer weight = transitions.get(x).getId();
             return Pair.of(x, weight);

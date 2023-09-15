@@ -1,5 +1,6 @@
 package info.victorchu.jregex.automata;
 
+import info.victorchu.jregex.automata.edge.EpsilonEdge;
 import info.victorchu.jregex.util.Pair;
 
 import javax.annotation.Nonnull;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
  * NFA 状态，在State上封装了 Transition 映射.
  *
  * @author victorchu
- * @date 2023/9/5 15:34
+ * 
  */
 public class NFAState {
     /**
@@ -28,28 +29,28 @@ public class NFAState {
      * state id ( must unique )
      */
     private final int id;
-    private final Map<Transition, Set<NFAState>> transitions;
+    private final Map<Edge, Set<NFAState>> transitions;
 
     /**
      * 增加转换
      *
-     * @param transition 转换
+     * @param edge 转换
      * @param to         转换后的NFA状态
      */
-    public void addTransition(Transition transition, NFAState to) {
-        Set<NFAState> stateSet = transitions.computeIfAbsent(transition, k -> new HashSet<>());
+    public void addTransition(Edge edge, NFAState to) {
+        Set<NFAState> stateSet = transitions.computeIfAbsent(edge, k -> new HashSet<>());
         stateSet.add(to);
     }
 
     /**
      * 获取转换对应的所有NFA 状态
      *
-     * @param transition 转换
+     * @param edge 转换
      * @return
      */
     @Nonnull
-    public List<NFAState> getSortedToStatesOfTransition(Transition transition) {
-        return transitions.getOrDefault(transition, new HashSet<>(0)).stream().sorted(Comparator.comparing(NFAState::getId)).collect(Collectors.toList());
+    public List<NFAState> getSortedToStatesOfTransition(Edge edge) {
+        return transitions.getOrDefault(edge, new HashSet<>(0)).stream().sorted(Comparator.comparing(NFAState::getId)).collect(Collectors.toList());
     }
 
     /**
@@ -58,8 +59,8 @@ public class NFAState {
      * @return
      */
     @Nonnull
-    public List<Transition> getAllTransitionExceptEpsilon() {
-        return transitions.keySet().stream().filter(t -> !t.equals(EpsilonTransition.INSTANCE)).collect(Collectors.toList());
+    public List<Edge> getAllTransitionExceptEpsilon() {
+        return transitions.keySet().stream().filter(t -> !t.equals(EpsilonEdge.INSTANCE)).collect(Collectors.toList());
     }
 
     /**
@@ -68,7 +69,7 @@ public class NFAState {
      * @return
      */
     @Nonnull
-    public List<Transition> getSortedAllTransition() {
+    public List<Edge> getSortedAllTransition() {
         return transitions.keySet().stream().map(x -> {
             Integer weight = transitions.get(x).stream().map(NFAState::getId).min(Comparator.naturalOrder()).orElse(0);
             return Pair.of(x, weight);

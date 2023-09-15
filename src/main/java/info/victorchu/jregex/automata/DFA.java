@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 /**
  * @author victorchu
- * @date 2023/9/5 17:12
+ * 
  */
 public class DFA
 {
@@ -111,7 +111,7 @@ public class DFA
 
     private Collection<Set<DFAState>> trySplit(Set<DFAState> set)
     {
-        for (Transition item : getTransitions(set)) {
+        for (Edge item : getTransitions(set)) {
             Map<Set<DFAState>, Set<DFAState>> mapping = new HashMap<>();
             // 没有对应转换的状态 -> 空集
             Set<DFAState> empty = new HashSet<>();
@@ -143,7 +143,7 @@ public class DFA
         return Collections.emptySet();
     }
 
-    private static Set<Transition> getTransitions(Set<DFAState> set)
+    private static Set<Edge> getTransitions(Set<DFAState> set)
     {
         return set.stream().flatMap(x -> x.getAllTransition().stream()).collect(Collectors.toSet());
     }
@@ -181,11 +181,11 @@ public class DFA
     {
         if (cursor != null && !markSet.contains(cursor.getId())) {
             markSet.add(cursor.getId());
-            List<Transition> transitions = cursor.getSortedAllTransition();
-            for (Transition transition : transitions) {
-                Optional<DFAState> state = cursor.getToStateOfTransition(transition);
+            List<Edge> edges = cursor.getSortedAllTransition();
+            for (Edge edge : edges) {
+                Optional<DFAState> state = cursor.getToStateOfTransition(edge);
                 if (state.isPresent()) {
-                    sb.append(cursor).append("-->|").append(transition).append("|").append(state.get()).append("\n");
+                    sb.append(cursor).append("-->|").append(edge).append("|").append(state.get()).append("\n");
                     printState(state.get(), sb, markSet);
                 }
             }
@@ -216,9 +216,9 @@ public class DFA
             String nfaStr = String.format("(%s)", cursor.getMappedDFAStates().stream().map(x -> "ds_" + x.getId()).collect(Collectors.joining(",")));
             sb.append("ms_").append(cursor.getId()).append("<==>").append(nfaStr).append("\n");
             markSet.add(cursor.getId());
-            List<Transition> transitions = cursor.getSortedAllTransition();
-            for (Transition transition : transitions) {
-                Optional<DFAState> state = cursor.getToStateOfTransition(transition);
+            List<Edge> edges = cursor.getSortedAllTransition();
+            for (Edge edge : edges) {
+                Optional<DFAState> state = cursor.getToStateOfTransition(edge);
                 state.ifPresent(dfaState -> printDFAMapping(dfaState, sb, markSet));
             }
         }
@@ -230,9 +230,9 @@ public class DFA
             String nfaStr = String.format("(%s)", cursor.getMappedNFAStates().stream().map(x -> "ns_" + x.getId()).collect(Collectors.joining(",")));
             sb.append("ds_").append(cursor.getId()).append("<==>").append(nfaStr).append("\n");
             markSet.add(cursor.getId());
-            List<Transition> transitions = cursor.getSortedAllTransition();
-            for (Transition transition : transitions) {
-                Optional<DFAState> state = cursor.getToStateOfTransition(transition);
+            List<Edge> edges = cursor.getSortedAllTransition();
+            for (Edge edge : edges) {
+                Optional<DFAState> state = cursor.getToStateOfTransition(edge);
                 state.ifPresent(dfaState -> printNFAMapping(dfaState, sb, markSet));
             }
         }

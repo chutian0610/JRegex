@@ -1,6 +1,6 @@
 package info.victorchu.jregex.ast;
 
-import info.victorchu.jregex.util.RegexExpTreePrinter;
+import info.victorchu.jregex.util.RegexExpTreeFormatter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ class RegexParserTest
             throws IOException
     {
         RegexExp regexExp = RegexParser.parse("ab*c|bc");
-        String tree = RegexExpTreePrinter.print(regexExp);
+        String tree = RegexExpTreeFormatter.print(regexExp);
         log.debug("\n================== tree ================\n{}======================================", tree);
         Assertions.assertEquals("[Or]\n" +
                 "├──[Concat]\n" +
@@ -36,7 +36,7 @@ class RegexParserTest
             throws IOException
     {
         RegexExp regexExp = RegexParser.parse("(A|a)b*c|bc");
-        String tree = RegexExpTreePrinter.print(regexExp);
+        String tree = RegexExpTreeFormatter.print(regexExp);
         log.info("\n================== tree ================\n{}======================================", tree);
         Assertions.assertEquals("[Or]\n" +
                 "├──[Concat]\n" +

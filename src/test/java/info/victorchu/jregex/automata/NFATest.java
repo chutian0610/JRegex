@@ -2,7 +2,7 @@ package info.victorchu.jregex.automata;
 
 import info.victorchu.jregex.ast.RegexExp;
 import info.victorchu.jregex.ast.RegexParser;
-import info.victorchu.jregex.util.RegexExpTreePrinter;
+import info.victorchu.jregex.util.RegexExpTreeFormatter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -12,7 +12,7 @@ import java.io.IOException;
 
 /**
  * @author victorchu
- * @date 2023/9/5 16:26
+ * 
  */
 class NFATest
 {
@@ -22,7 +22,7 @@ class NFATest
             throws IOException
     {
         RegexExp regexExpression = RegexParser.parse("ab");
-        String tree = RegexExpTreePrinter.print(regexExpression);
+        String tree = RegexExpTreeFormatter.print(regexExpression);
         log.info("\n================== tree ================\n{}=====================================", tree);
         NFA nfa = NFA.buildNFA(regexExpression);
         String nfaStr = nfa.toString();
@@ -38,7 +38,7 @@ class NFATest
             throws IOException
     {
         RegexExp regexExpression = RegexParser.parse("a|b");
-        String tree = RegexExpTreePrinter.print(regexExpression);
+        String tree = RegexExpTreeFormatter.print(regexExpression);
         log.info("\n================== tree ================\n{}=====================================", tree);
         NFA nfa = NFA.buildNFA(regexExpression);
         String nfaStr = nfa.toString();
@@ -57,7 +57,7 @@ class NFATest
             throws IOException
     {
         RegexExp regexExpression = RegexParser.parse("a*b");
-        String tree = RegexExpTreePrinter.print(regexExpression);
+        String tree = RegexExpTreeFormatter.print(regexExpression);
         log.info("\n================== tree ================\n{}=====================================", tree);
         NFA nfa = NFA.buildNFA(regexExpression);
         String nfaStr = nfa.toString();
@@ -77,7 +77,7 @@ class NFATest
             throws IOException
     {
         RegexExp regexExpression = RegexParser.parse("(a|b)*abb");
-        String tree = RegexExpTreePrinter.print(regexExpression);
+        String tree = RegexExpTreeFormatter.print(regexExpression);
         log.info("\n================== tree ================\n{}=====================================", tree);
         NFA nfa = NFA.buildNFA(regexExpression);
         String nfaStr = nfa.toString();

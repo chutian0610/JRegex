@@ -5,8 +5,7 @@ package info.victorchu.jregex.ast;
  *
  * @author victorchutian
  */
-public interface RegexExpVisitor<T, C>
-{
+public interface RegexExpVisitor<T, C> {
 
     // --------------- 基于 RegexNode 具体类型分发 ------------------------
 
@@ -19,8 +18,7 @@ public interface RegexExpVisitor<T, C>
     T visitRepeat(RepeatExp node, C context);
 
     // 泛型入口
-    default T process(RegexExp node, C context)
-    {
+    default T process(RegexExp node, C context) {
         return node.accept(this, context);
     }
 }
