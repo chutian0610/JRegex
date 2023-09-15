@@ -12,8 +12,11 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class RepeatExp extends RegexExp {
-    public RepeatExp(RegexExp inner) {
+public class RepeatExp
+        extends RegexExp
+{
+    public RepeatExp(RegexExp inner)
+    {
         super(NodeType.REGEXP_REPEAT);
         this.inner = inner;
     }
@@ -21,8 +24,8 @@ public class RepeatExp extends RegexExp {
     private RegexExp inner;
 
     @Override
-    public <T, C> T accept(RegexExpVisitor<T, C> visitor, C context) {
+    public <T, C> T accept(RegexExpVisitor<T, C> visitor, C context)
+    {
         return visitor.visitRepeat(this, context);
     }
-
 }

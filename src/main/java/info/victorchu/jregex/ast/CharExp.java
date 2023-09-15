@@ -1,9 +1,7 @@
 package info.victorchu.jregex.ast;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -14,8 +12,11 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class CharExp extends RegexExp {
-    public CharExp(Character character) {
+public class CharExp
+        extends RegexExp
+{
+    public CharExp(Character character)
+    {
         super(NodeType.REGEXP_CHAR);
         this.character = character;
     }
@@ -23,7 +24,8 @@ public class CharExp extends RegexExp {
     private Character character;
 
     @Override
-    public <T, C> T accept(RegexExpVisitor<T, C> visitor, C context) {
+    public <T, C> T accept(RegexExpVisitor<T, C> visitor, C context)
+    {
         return visitor.visitChar(this, context);
     }
 }

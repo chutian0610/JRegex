@@ -1,5 +1,7 @@
 package info.victorchu.jregex.util;
 
+import lombok.Getter;
+
 /**
  * pair with two unmodified elements
  *
@@ -7,24 +9,21 @@ package info.victorchu.jregex.util;
  * @param <R> type of right element
  * @author victorchu
  */
-public class Pair<L, R> {
-    public L getLeft() {
-        return left;
-    }
+@Getter
+public class Pair<L, R>
+{
 
     private final L left;
 
-    public R getRight() {
-        return right;
-    }
-
     private final R right;
 
-    public static <L, R> Pair<L, R> of(L left, R right) {
+    public static <L, R> Pair<L, R> of(L left, R right)
+    {
         return new Pair<>(left, right);
     }
 
-    private Pair(L left, R right) {
+    private Pair(L left, R right)
+    {
         this.left = left;
         this.right = right;
     }

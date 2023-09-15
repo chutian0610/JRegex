@@ -12,7 +12,8 @@ import java.util.Set;
 /**
  * @author victorchu
  */
-public class AutoMateMermaidJSFormatter {
+public class AutoMateMermaidJSFormatter
+{
 
     public static final AutoMateMermaidJSFormatter INSTANCE = new AutoMateMermaidJSFormatter();
 
@@ -25,7 +26,8 @@ public class AutoMateMermaidJSFormatter {
      * @see <a href="https://mermaid.live/">https://mermaid.live</a>
      * @see <a href="https://mermaid.js.org/intro/n00b-gettingStarted.html">https://mermaid.js.org/intro/n00b-gettingStarted.html</a>
      */
-    public List<String> convertNFA2FlowChart(NFAGraph nfaGraph) {
+    public List<String> convertNFA2FlowChart(NFAGraph nfaGraph)
+    {
         List<String> list = new ArrayList<>();
         list.add("flowchart LR");
         Set<Integer> markSet = new HashSet<>();
@@ -33,7 +35,8 @@ public class AutoMateMermaidJSFormatter {
         return list;
     }
 
-    protected void handleState(State cursor, List<String> sb, Set<Integer> markSet) {
+    protected void handleState(State cursor, List<String> sb, Set<Integer> markSet)
+    {
         if (cursor != null && !markSet.contains(cursor.getStateId())) {
             markSet.add(cursor.getStateId());
             Set<Transition> transitions = cursor.getTransitions();
@@ -45,14 +48,15 @@ public class AutoMateMermaidJSFormatter {
         }
     }
 
-    protected String convertState2Line(@NonNull State state, @NonNull Transition transition) {
+    protected String convertState2Line(@NonNull State state, @NonNull Transition transition)
+    {
         return convertState2Node(state) + "-->|" + transition.getEdge() + "|" + convertState2Node(transition.getState()) + "";
     }
 
-    protected String convertState2Node(@NonNull State state) {
+    protected String convertState2Node(@NonNull State state)
+    {
         return state.isAccept() ?
                 String.format("s_%d((%d))", state.getStateId(), state.getStateId()) :
                 String.format("s_%d(%d)", state.getStateId(), state.getStateId());
     }
-
 }

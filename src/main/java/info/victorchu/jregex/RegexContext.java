@@ -8,7 +8,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author victorchu
  */
-public class RegexContext {
+public class RegexContext
+{
 
     /**
      * NFA state id generator
@@ -21,28 +22,31 @@ public class RegexContext {
 
     private StateManager stateManager;
 
-    public RegexContext(StateManager stateManager) {
+    public RegexContext(StateManager stateManager)
+    {
         this.stateManager = stateManager;
         reset();
     }
 
-    public synchronized void reset() {
+    public synchronized void reset()
+    {
         nextNFAId = new AtomicInteger(0);
         nextDFAId = new AtomicInteger(0);
         stateManager.reset();
     }
 
-    public Integer getNextNFAID() {
+    public Integer getNextNFAID()
+    {
         return nextNFAId.getAndIncrement();
     }
 
-    public Integer getNextDFAID() {
+    public Integer getNextDFAID()
+    {
         return nextDFAId.getAndIncrement();
     }
 
-    public State createNFAState() {
+    public State createNFAState()
+    {
         return stateManager.createNFAState(this);
     }
-
-
 }

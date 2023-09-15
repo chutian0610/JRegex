@@ -13,7 +13,6 @@ import java.util.stream.Stream;
 
 /**
  * @author victorchu
- * 
  */
 public class DFA
 {
@@ -34,12 +33,7 @@ public class DFA
     public DFA simplify()
     {
         // 将 所有 DFA 状态分为 终结状态集合和非终结状态集合
-        Set<Set<DFAState>> sets = context.getDFAStates()
-                .stream()
-                .collect(Collectors.groupingBy(DFAState::isAccept))
-                .values().stream()
-                .map(HashSet::new)
-                .collect(Collectors.toSet());
+        Set<Set<DFAState>> sets = context.getDFAStates().stream().collect(Collectors.groupingBy(DFAState::isAccept)).values().stream().map(HashSet::new).collect(Collectors.toSet());
         context.initMinimizationIndexMap(sets);
 
         simplify(sets);

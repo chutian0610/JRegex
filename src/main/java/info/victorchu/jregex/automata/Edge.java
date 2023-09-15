@@ -7,15 +7,17 @@ import info.victorchu.jregex.automata.edge.EpsilonEdge;
  * state ==|edge|==> state
  *
  * @author victorchu
- * 
  */
-public interface Edge {
+public interface Edge
+{
 
-    static Edge epsilon() {
+    static Edge epsilon()
+    {
         return EpsilonEdge.INSTANCE;
     }
 
-    static Edge character(Character c) {
+    static Edge character(Character c)
+    {
         return new CharacterEdge(c);
     }
 }

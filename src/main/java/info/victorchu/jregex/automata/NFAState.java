@@ -4,6 +4,7 @@ import info.victorchu.jregex.automata.edge.EpsilonEdge;
 import info.victorchu.jregex.util.Pair;
 
 import javax.annotation.Nonnull;
+
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,9 +19,9 @@ import java.util.stream.Collectors;
  * NFA 状态，在State上封装了 Transition 映射.
  *
  * @author victorchu
- * 
  */
-public class NFAState {
+public class NFAState
+{
     /**
      * 是否是可接受状态
      */
@@ -35,9 +36,10 @@ public class NFAState {
      * 增加转换
      *
      * @param edge 转换
-     * @param to         转换后的NFA状态
+     * @param to 转换后的NFA状态
      */
-    public void addTransition(Edge edge, NFAState to) {
+    public void addTransition(Edge edge, NFAState to)
+    {
         Set<NFAState> stateSet = transitions.computeIfAbsent(edge, k -> new HashSet<>());
         stateSet.add(to);
     }
@@ -49,7 +51,8 @@ public class NFAState {
      * @return
      */
     @Nonnull
-    public List<NFAState> getSortedToStatesOfTransition(Edge edge) {
+    public List<NFAState> getSortedToStatesOfTransition(Edge edge)
+    {
         return transitions.getOrDefault(edge, new HashSet<>(0)).stream().sorted(Comparator.comparing(NFAState::getId)).collect(Collectors.toList());
     }
 
@@ -59,7 +62,8 @@ public class NFAState {
      * @return
      */
     @Nonnull
-    public List<Edge> getAllTransitionExceptEpsilon() {
+    public List<Edge> getAllTransitionExceptEpsilon()
+    {
         return transitions.keySet().stream().filter(t -> !t.equals(EpsilonEdge.INSTANCE)).collect(Collectors.toList());
     }
 
@@ -69,14 +73,16 @@ public class NFAState {
      * @return
      */
     @Nonnull
-    public List<Edge> getSortedAllTransition() {
+    public List<Edge> getSortedAllTransition()
+    {
         return transitions.keySet().stream().map(x -> {
             Integer weight = transitions.get(x).stream().map(NFAState::getId).min(Comparator.naturalOrder()).orElse(0);
             return Pair.of(x, weight);
         }).sorted((o1, o2) -> o2.getRight().compareTo(o1.getRight())).map(Pair::getLeft).collect(Collectors.toList());
     }
 
-    public NFAState(Supplier<Integer> id) {
+    public NFAState(Supplier<Integer> id)
+    {
         this.id = id.get();
         this.accept = false;
         transitions = new HashMap<>();
@@ -87,7 +93,8 @@ public class NFAState {
      *
      * @return id
      */
-    public int getId() {
+    public int getId()
+    {
         return id;
     }
 
@@ -96,7 +103,8 @@ public class NFAState {
      *
      * @return isAccept
      */
-    public boolean isAccept() {
+    public boolean isAccept()
+    {
         return accept;
     }
 
@@ -105,22 +113,26 @@ public class NFAState {
      *
      * @param accept 是否可接受
      */
-    public void setAccept(boolean accept) {
+    public void setAccept(boolean accept)
+    {
         this.accept = accept;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
 
         if (isAccept()) {
             return String.format("ns_%d((%d))", getId(), getId());
-        } else {
+        }
+        else {
             return String.format("ns_%d(%d)", getId(), getId());
         }
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (this == o) {
             return true;
         }
@@ -132,7 +144,8 @@ public class NFAState {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return Objects.hash(id);
     }
 }

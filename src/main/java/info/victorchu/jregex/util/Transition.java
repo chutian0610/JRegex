@@ -7,17 +7,19 @@ import lombok.Getter;
 
 /**
  * @author victorchu
- * 
  */
 @EqualsAndHashCode
 @Getter
-public class Transition {
+public class Transition
+{
 
-    public static Transition of(Edge edge, State state) {
+    public static Transition of(Edge edge, State state)
+    {
         return new Transition(edge, state);
     }
 
-    private Transition(Edge edge, State state) {
+    private Transition(Edge edge, State state)
+    {
         this.edge = edge;
         this.state = state;
     }
@@ -26,7 +28,8 @@ public class Transition {
     private final State state;
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "-- " + edge.toString() + " -->" + state.toString();
     }
 }

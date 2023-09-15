@@ -21,7 +21,8 @@ package info.victorchu.jregex.ast;
  *
  * @author victorchutian
  */
-public class RegexParser {
+public class RegexParser
+{
     /**
      * 正则表达式字符串
      */
@@ -34,7 +35,8 @@ public class RegexParser {
      * @param regexStr 正则表达式字符串
      * @return
      */
-    public static RegexExp parse(String regexStr) {
+    public static RegexExp parse(String regexStr)
+    {
         return new RegexParser(regexStr).parseRegex();
     }
 
@@ -43,7 +45,8 @@ public class RegexParser {
      *
      * @param regexStr 正则表达式字符串
      */
-    private RegexParser(String regexStr) {
+    private RegexParser(String regexStr)
+    {
         this.regexStr = regexStr;
     }
 
@@ -53,7 +56,8 @@ public class RegexParser {
      * @param c 输入字符
      * @return
      */
-    private boolean matchChar(char c) {
+    private boolean matchChar(char c)
+    {
         if (position >= regexStr.length()) {
             return false;
         }
@@ -69,7 +73,8 @@ public class RegexParser {
      *
      * @return 是否到达字符串尾部
      */
-    private boolean notEnd() {
+    private boolean notEnd()
+    {
         return position < regexStr.length();
     }
 
@@ -79,7 +84,8 @@ public class RegexParser {
      * @param s 输入字符串
      * @return
      */
-    private boolean peek(String s) {
+    private boolean peek(String s)
+    {
         return notEnd() && s.indexOf(regexStr.charAt(position)) != -1;
     }
 
@@ -89,7 +95,9 @@ public class RegexParser {
      * @return
      * @throws IllegalArgumentException
      */
-    private char next() throws IllegalArgumentException {
+    private char next()
+            throws IllegalArgumentException
+    {
         if (!notEnd()) {
             throw new IllegalArgumentException("unexpected end-of-string");
         }
@@ -103,7 +111,8 @@ public class RegexParser {
      *
      * @return
      */
-    private RegexExp parseRegex() {
+    private RegexExp parseRegex()
+    {
         RegexExp regexExp = parseUnionExp();
         if (matchChar('|')) {
             return OrExp.builder().left(regexExp).right(parseUnionExp()).build();
@@ -111,7 +120,8 @@ public class RegexParser {
         return regexExp;
     }
 
-    private RegexExp parseUnionExp() {
+    private RegexExp parseUnionExp()
+    {
         RegexExp regexExp = parseConcatExp();
         if (notEnd() && !peek("|)")) {
             return ConcatExp.builder().left(regexExp).right(parseUnionExp()).build();
@@ -119,7 +129,8 @@ public class RegexParser {
         return regexExp;
     }
 
-    private RegexExp parseConcatExp() {
+    private RegexExp parseConcatExp()
+    {
         RegexExp regexExp = parseRepeatExp();
         if (matchChar('*')) {
             return RepeatExp.builder().inner(regexExp).build();
@@ -127,20 +138,24 @@ public class RegexParser {
         return regexExp;
     }
 
-    private RegexExp parseRepeatExp() {
+    private RegexExp parseRepeatExp()
+    {
         if (matchChar('(')) {
             RegexExp regex = parseRegex();
             if (matchChar(')')) {
                 return regex;
-            } else {
+            }
+            else {
                 throw new IllegalArgumentException("expected ')' at position " + position);
             }
-        } else {
+        }
+        else {
             return parseCharExp();
         }
     }
 
-    private RegexExp parseCharExp() {
+    private RegexExp parseCharExp()
+    {
         matchChar('\\');
         return CharExp.builder().character(next()).build();
     }

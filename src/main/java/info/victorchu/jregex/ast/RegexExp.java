@@ -8,11 +8,13 @@ import lombok.Getter;
  * @author victorchutian
  */
 @Getter
-public abstract class RegexExp {
+public abstract class RegexExp
+{
 
     protected NodeType nodeType;
 
-    public RegexExp(NodeType nodeType) {
+    public RegexExp(NodeType nodeType)
+    {
         this.nodeType = nodeType;
     }
 
@@ -27,7 +29,8 @@ public abstract class RegexExp {
     /**
      * 节点类型
      */
-    public enum NodeType {
+    public enum NodeType
+    {
         /**
          * s|t 或
          */

@@ -5,9 +5,12 @@ import info.victorchu.jregex.RegexContext;
 /**
  * @author victorchu
  */
-public interface StateManager {
+public interface StateManager
+{
     State createNFAState(RegexContext context);
+
     State createDFAState(RegexContext context);
+
     State createMinimizationDFAState(RegexContext context);
 
     void reset();

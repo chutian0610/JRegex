@@ -5,18 +5,21 @@ import lombok.EqualsAndHashCode;
 
 /**
  * @author victorchu
- * 
  */
 @EqualsAndHashCode
-public class CharacterEdge implements Edge {
+public class CharacterEdge
+        implements Edge
+{
     protected Character character;
 
-    public CharacterEdge(Character character) {
+    public CharacterEdge(Character character)
+    {
         this.character = character;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return String.format("'%s'", character);
     }
 }

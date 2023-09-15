@@ -4,13 +4,15 @@ import info.victorchu.jregex.automata.Edge;
 
 /**
  * @author victorchu
- * 
  */
-public enum EpsilonEdge implements Edge {
+public enum EpsilonEdge
+        implements Edge
+{
     INSTANCE;
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "ϵ";
     }
 }

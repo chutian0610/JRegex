@@ -12,9 +12,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class ConcatExp extends RegexExp {
+public class ConcatExp
+        extends RegexExp
+{
 
-    public ConcatExp(RegexExp left, RegexExp right) {
+    public ConcatExp(RegexExp left, RegexExp right)
+    {
         super(NodeType.REGEX_CONCAT);
         this.left = left;
         this.right = right;
@@ -24,7 +27,8 @@ public class ConcatExp extends RegexExp {
     private RegexExp right;
 
     @Override
-    public <T, C> T accept(RegexExpVisitor<T, C> visitor, C context) {
+    public <T, C> T accept(RegexExpVisitor<T, C> visitor, C context)
+    {
         return visitor.visitConcat(this, context);
     }
 }

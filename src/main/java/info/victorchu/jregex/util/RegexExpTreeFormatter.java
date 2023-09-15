@@ -15,28 +15,33 @@ import java.util.Optional;
  *
  * @author victorchu
  */
-public class RegexExpTreeFormatter implements RegexExpVisitor<Object, Pair<RegexExpTreeFormatter.PrintStackContext, Boolean>> {
+public class RegexExpTreeFormatter
+        implements RegexExpVisitor<Object, Pair<RegexExpTreeFormatter.PrintStackContext, Boolean>>
+{
     private static final RegexExpTreeFormatter INSTANCE = new RegexExpTreeFormatter();
 
-    public static String print(RegexExp node) {
+    public static String print(RegexExp node)
+    {
         PrintStackContext context = new PrintStackContext();
         INSTANCE.process(node, Pair.of(context, false));
         return context.sb.toString();
     }
 
     @Override
-    public Object visitChar(CharExp node, Pair<PrintStackContext, Boolean> context) {
+    public Object visitChar(CharExp node, Pair<PrintStackContext, Boolean> context)
+    {
         context.getLeft().push(node, context.getRight());
-        context.getLeft().peek().ifPresent(x->context.getLeft().append(x));
+        context.getLeft().peek().ifPresent(x -> context.getLeft().append(x));
         context.getLeft().pop();
 
         return null;
     }
 
     @Override
-    public Object visitConcat(ConcatExp node, Pair<PrintStackContext, Boolean> context) {
+    public Object visitConcat(ConcatExp node, Pair<PrintStackContext, Boolean> context)
+    {
         context.getLeft().push(node, context.getRight());
-        context.getLeft().peek().ifPresent(x->context.getLeft().append(x));
+        context.getLeft().peek().ifPresent(x -> context.getLeft().append(x));
         process(node.getLeft(), Pair.of(context.getLeft(), false));
         process(node.getRight(), Pair.of(context.getLeft(), true));
         context.getLeft().pop();
@@ -44,9 +49,10 @@ public class RegexExpTreeFormatter implements RegexExpVisitor<Object, Pair<Regex
     }
 
     @Override
-    public Object visitOr(OrExp node, Pair<PrintStackContext, Boolean> context) {
+    public Object visitOr(OrExp node, Pair<PrintStackContext, Boolean> context)
+    {
         context.getLeft().push(node, context.getRight());
-        context.getLeft().peek().ifPresent(x->context.getLeft().append(x));
+        context.getLeft().peek().ifPresent(x -> context.getLeft().append(x));
         process(node.getLeft(), Pair.of(context.getLeft(), false));
         process(node.getRight(), Pair.of(context.getLeft(), true));
         context.getLeft().pop();
@@ -54,46 +60,54 @@ public class RegexExpTreeFormatter implements RegexExpVisitor<Object, Pair<Regex
     }
 
     @Override
-    public Object visitRepeat(RepeatExp node, Pair<PrintStackContext, Boolean> context) {
+    public Object visitRepeat(RepeatExp node, Pair<PrintStackContext, Boolean> context)
+    {
         context.getLeft().push(node, context.getRight());
-        context.getLeft().peek().ifPresent(x->context.getLeft().append(x));
+        context.getLeft().peek().ifPresent(x -> context.getLeft().append(x));
         process(node.getInner(), Pair.of(context.getLeft(), true));
         context.getLeft().pop();
         return null;
     }
 
-    public static class PrintStackContext {
+    public static class PrintStackContext
+    {
 
         private final LinkedList<StackItem> stack;
         private final StringBuilder sb;
 
-        public PrintStackContext() {
+        public PrintStackContext()
+        {
             stack = new LinkedList<>();
             sb = new StringBuilder();
         }
 
-        public void append(Object s){
+        public void append(Object s)
+        {
             sb.append(s);
         }
 
-        public void push(RegexExp node, boolean last) {
+        public void push(RegexExp node, boolean last)
+        {
             StackItem wrapper;
             if (stack.isEmpty()) {
                 wrapper = StackItem.root(node);
-            } else {
+            }
+            else {
                 wrapper = StackItem.of(node, last, stack.peek());
             }
             stack.push(wrapper);
         }
 
-        public Optional<StackItem> pop() {
+        public Optional<StackItem> pop()
+        {
             if (stack.isEmpty()) {
                 return Optional.empty();
             }
             return Optional.ofNullable(stack.pop());
         }
 
-        public Optional<StackItem> peek() {
+        public Optional<StackItem> peek()
+        {
             return Optional.ofNullable(stack.peek());
         }
     }
@@ -101,12 +115,15 @@ public class RegexExpTreeFormatter implements RegexExpVisitor<Object, Pair<Regex
     /**
      * 栈中的元素
      */
-    public static class StackItem {
-        public static StackItem of(RegexExp node, boolean last, StackItem parent) {
+    public static class StackItem
+    {
+        public static StackItem of(RegexExp node, boolean last, StackItem parent)
+        {
             return new StackItem(node, last, parent);
         }
 
-        public static StackItem root(RegexExp node) {
+        public static StackItem root(RegexExp node)
+        {
             return new StackItem(node, false, null);
         }
 
@@ -118,30 +135,36 @@ public class RegexExpTreeFormatter implements RegexExpVisitor<Object, Pair<Regex
          */
         private final StackItem parent;
 
-        private StackItem(RegexExp node, boolean last, StackItem parent) {
+        private StackItem(RegexExp node, boolean last, StackItem parent)
+        {
             this.node = node;
             this.parent = parent;
             this.last = last;
         }
 
-        public RegexExp getNode() {
+        public RegexExp getNode()
+        {
             return node;
         }
 
-        public StackItem getParent() {
+        public StackItem getParent()
+        {
             return parent;
         }
 
-        public boolean isRoot() {
+        public boolean isRoot()
+        {
             return parent == null;
         }
 
-        public boolean isLast() {
+        public boolean isLast()
+        {
             return last;
         }
 
         @Override
-        public String toString() {
+        public String toString()
+        {
             if (parent == null) {
                 return RegexExpFormatter.formatter.process(node, null) + "\n";
             }
@@ -149,14 +172,16 @@ public class RegexExpTreeFormatter implements RegexExpVisitor<Object, Pair<Regex
             StackItem cursor = this;
             if (cursor.last) {
                 nodeStr.insert(0, "└──");
-            } else {
+            }
+            else {
                 nodeStr.insert(0, "├──");
             }
             cursor = cursor.parent;
             while (cursor.parent != null) {
                 if (cursor.last) {
                     nodeStr.insert(0, "   ");
-                } else {
+                }
+                else {
                     nodeStr.insert(0, "│  ");
                 }
                 cursor = cursor.parent;
@@ -165,26 +190,32 @@ public class RegexExpTreeFormatter implements RegexExpVisitor<Object, Pair<Regex
         }
     }
 
-    public static class RegexExpFormatter implements RegexExpVisitor<String, Void> {
+    public static class RegexExpFormatter
+            implements RegexExpVisitor<String, Void>
+    {
         public static RegexExpFormatter formatter = new RegexExpFormatter();
 
         @Override
-        public String visitChar(CharExp node, Void context) {
+        public String visitChar(CharExp node, Void context)
+        {
             return "[Char] : " + node.getCharacter();
         }
 
         @Override
-        public String visitConcat(ConcatExp node, Void context) {
+        public String visitConcat(ConcatExp node, Void context)
+        {
             return "[Concat]";
         }
 
         @Override
-        public String visitOr(OrExp node, Void context) {
+        public String visitOr(OrExp node, Void context)
+        {
             return "[Or]";
         }
 
         @Override
-        public String visitRepeat(RepeatExp node, Void context) {
+        public String visitRepeat(RepeatExp node, Void context)
+        {
             return "[Repeat]";
         }
     }

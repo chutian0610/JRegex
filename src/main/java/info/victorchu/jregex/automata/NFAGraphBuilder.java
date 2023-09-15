@@ -13,10 +13,14 @@ import java.util.function.BiFunction;
 /**
  * @author victorchu
  */
-public class NFAGraphBuilder implements RegexExpVisitor<SubGraph, RegexContext>, BiFunction<RegexExp, RegexContext, NFAGraph> {
+public class NFAGraphBuilder
+        implements RegexExpVisitor<SubGraph, RegexContext>, BiFunction<RegexExp, RegexContext, NFAGraph>
+{
     public static final NFAGraphBuilder INSTANCE = new NFAGraphBuilder();
+
     @Override
-    public SubGraph visitChar(CharExp node, RegexContext context) {
+    public SubGraph visitChar(CharExp node, RegexContext context)
+    {
         State start = context.createNFAState();
         State charState = context.createNFAState();
         start.addTransition(Edge.character(node.getCharacter()), charState);
@@ -24,7 +28,8 @@ public class NFAGraphBuilder implements RegexExpVisitor<SubGraph, RegexContext>,
     }
 
     @Override
-    public SubGraph visitConcat(ConcatExp node, RegexContext context) {
+    public SubGraph visitConcat(ConcatExp node, RegexContext context)
+    {
         SubGraph subNFALeft = process(node.getLeft(), context);
         SubGraph subNFARight = process(node.getRight(), context);
         subNFALeft.getEnd().addTransition(subNFARight.getInEdge(), subNFARight.getStart());
@@ -32,7 +37,8 @@ public class NFAGraphBuilder implements RegexExpVisitor<SubGraph, RegexContext>,
     }
 
     @Override
-    public SubGraph visitOr(OrExp node, RegexContext context) {
+    public SubGraph visitOr(OrExp node, RegexContext context)
+    {
         State begin = context.createNFAState();
         SubGraph subNFALeft = process(node.getLeft(), context);
         begin.addTransition(subNFALeft.getInEdge(), subNFALeft.getStart());
@@ -45,7 +51,8 @@ public class NFAGraphBuilder implements RegexExpVisitor<SubGraph, RegexContext>,
     }
 
     @Override
-    public SubGraph visitRepeat(RepeatExp node, RegexContext context) {
+    public SubGraph visitRepeat(RepeatExp node, RegexContext context)
+    {
         State begin = context.createNFAState();
         SubGraph subNFA = process(node.getInner(), context);
         State end = context.createNFAState();
@@ -62,9 +69,10 @@ public class NFAGraphBuilder implements RegexExpVisitor<SubGraph, RegexContext>,
     }
 
     @Override
-    public NFAGraph apply(RegexExp regexExp, RegexContext context) {
+    public NFAGraph apply(RegexExp regexExp, RegexContext context)
+    {
         SubGraph subGraph = process(regexExp, context);
         subGraph.getEnd().setAccept(true);
-        return NFAGraph.of(subGraph.getStart(),context);
+        return NFAGraph.of(subGraph.getStart(), context);
     }
 }

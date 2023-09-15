@@ -8,14 +8,12 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-class RegexParserTest
-{
+class RegexParserTest {
     private static final Logger log = LoggerFactory.getLogger(RegexParserTest.class);
 
     @Test
     void parse01()
-            throws IOException
-    {
+            throws IOException {
         RegexExp regexExp = RegexParser.parse("ab*c|bc");
         String tree = RegexExpTreeFormatter.print(regexExp);
         log.debug("\n================== tree ================\n{}======================================", tree);
@@ -33,8 +31,7 @@ class RegexParserTest
 
     @Test
     void parse02()
-            throws IOException
-    {
+            throws IOException {
         RegexExp regexExp = RegexParser.parse("(A|a)b*c|bc");
         String tree = RegexExpTreeFormatter.print(regexExp);
         log.info("\n================== tree ================\n{}======================================", tree);

@@ -9,7 +9,8 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor(staticName = "of")
 @Getter
-public class SubGraph {
+public class SubGraph
+{
     @NonNull
     private Edge inEdge;
     @NonNull

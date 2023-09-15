@@ -14,6 +14,6 @@ public class TestUtil {
         return IsIterableContainingInAnyOrder.<T>containsInAnyOrder((T[]) items.toArray());
     }
     public static String chart2ExpectString(List<String> chart){
-        return "\""+String.join("\",\"",chart)+"\"";
+        return "\"" + String.join("\",\n\"", chart) + "\"";
     }
 }
