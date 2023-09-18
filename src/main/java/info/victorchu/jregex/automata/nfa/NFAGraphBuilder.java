@@ -1,4 +1,4 @@
-package info.victorchu.jregex.automata;
+package info.victorchu.jregex.automata.nfa;
 
 import info.victorchu.jregex.RegexContext;
 import info.victorchu.jregex.ast.CharExp;
@@ -7,6 +7,9 @@ import info.victorchu.jregex.ast.OrExp;
 import info.victorchu.jregex.ast.RegexExp;
 import info.victorchu.jregex.ast.RegexExpVisitor;
 import info.victorchu.jregex.ast.RepeatExp;
+import info.victorchu.jregex.automata.Edge;
+import info.victorchu.jregex.automata.State;
+import info.victorchu.jregex.automata.SubGraph;
 
 import java.util.function.BiFunction;
 

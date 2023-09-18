@@ -1,6 +1,7 @@
 package info.victorchu.jregex.util;
 
-import info.victorchu.jregex.automata.NFAGraph;
+import com.google.common.base.Strings;
+import info.victorchu.jregex.automata.nfa.NFAGraph;
 import info.victorchu.jregex.automata.State;
 import lombok.NonNull;
 
@@ -26,7 +27,23 @@ public class AutoMateMermaidJSFormatter
      * @see <a href="https://mermaid.live/">https://mermaid.live</a>
      * @see <a href="https://mermaid.js.org/intro/n00b-gettingStarted.html">https://mermaid.js.org/intro/n00b-gettingStarted.html</a>
      */
-    public List<String> convertNFA2FlowChart(NFAGraph nfaGraph)
+    public String convertNFA2FlowChart(NFAGraph nfaGraph)
+    {
+        List<String> list = new ArrayList<>();
+        list.add("flowchart LR");
+        Set<Integer> markSet = new HashSet<>();
+        handleState(nfaGraph.getStart(), list, markSet);
+        return String.join("\n", list) + "\n";
+    }
+
+    /**
+     * 打印NFA状态图(mermaid.js 流程图语法).
+     *
+     * @return
+     * @see <a href="https://mermaid.live/">https://mermaid.live</a>
+     * @see <a href="https://mermaid.js.org/intro/n00b-gettingStarted.html">https://mermaid.js.org/intro/n00b-gettingStarted.html</a>
+     */
+    public List<String> convertNFA2FlowChartLines(NFAGraph nfaGraph)
     {
         List<String> list = new ArrayList<>();
         list.add("flowchart LR");
