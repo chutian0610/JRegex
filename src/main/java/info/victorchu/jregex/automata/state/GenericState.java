@@ -56,6 +56,12 @@ public class GenericState implements State {
     }
 
     @Override
+    public Set<Transition> getTransitionsOfEdge(Edge edge)
+    {
+        return edge2TransitionMap.get(edge);
+    }
+
+    @Override
     public void addTransition(Transition transition) {
         if (isDeterministic() && hasTransitionsOfSameEdge(transition)) {
             log.error("transition must deterministic, insert:{} , already exists: {}",

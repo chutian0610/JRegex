@@ -3,6 +3,7 @@ package info.victorchu.jregex.automata;
 import info.victorchu.jregex.util.Transition;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author victorchu
@@ -33,6 +34,11 @@ public interface State
      * @return
      */
     Set<Transition> getTransitions();
+
+    default Set<Transition> getTransitionsOfEdge(Edge edge)
+    {
+        return getTransitions().stream().filter(x -> x.getEdge().equals(edge)).collect(Collectors.toSet());
+    }
 
     /**
      * 增加状态的转换

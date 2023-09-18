@@ -6,6 +6,7 @@ import info.victorchu.jregex.automata.StateManager;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author victorchu
@@ -19,6 +20,12 @@ public class GenericStateManager implements StateManager {
         State nfaState= new GenericState(context.getNextNFAID(),false);
         nfaStateMap.put(nfaState.getStateId(), nfaState);
         return nfaState;
+    }
+
+    @Override
+    public Optional<State> getNFAState(Integer id)
+    {
+        return Optional.ofNullable(nfaStateMap.get(id));
     }
 
     @Override

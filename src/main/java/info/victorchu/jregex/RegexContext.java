@@ -2,6 +2,7 @@ package info.victorchu.jregex;
 
 import info.victorchu.jregex.automata.State;
 import info.victorchu.jregex.automata.StateManager;
+import lombok.Getter;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -20,7 +21,7 @@ public class RegexContext
      */
     private AtomicInteger nextDFAId;
 
-    private StateManager stateManager;
+    @Getter private final StateManager stateManager;
 
     public RegexContext(StateManager stateManager)
     {

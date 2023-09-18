@@ -76,6 +76,6 @@ public class NFAGraphBuilder
     {
         SubGraph subGraph = process(regexExp, context);
         subGraph.getEnd().setAccept(true);
-        return NFAGraph.of(subGraph.getStart(), context);
+        return NFAGraph.of(subGraph.getStart(), context.getStateManager());
     }
 }
