@@ -52,7 +52,7 @@ class NFAGraphBuilderTest {
     void buildNFA02() throws IOException {
         RegexExp regexExpression = RegexParser.parse("a|b");
         String tree = RegexExpTreeFormatter.print(regexExpression);
-        log.info("\n================== tree ================\n{}=====================================", tree);
+        log.debug("\n================== tree ================\n{}=====================================", tree);
         NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext);
         List<String> chart = nfaGraph.toMermaidJsChartLines();
         log.debug("\n================== NFA ================\n{}======================================", nfaGraph.toMermaidJsChart());
@@ -72,7 +72,7 @@ class NFAGraphBuilderTest {
     void buildNFA03() throws IOException {
         RegexExp regexExpression = RegexParser.parse("a*b");
         String tree = RegexExpTreeFormatter.print(regexExpression);
-        log.info("\n================== tree ================\n{}=====================================", tree);
+        log.debug("\n================== tree ================\n{}=====================================", tree);
         NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext);
         List<String> chart = nfaGraph.toMermaidJsChartLines();
         log.debug("\n================== NFA ================\n{}======================================", nfaGraph.toMermaidJsChart());
@@ -93,7 +93,7 @@ class NFAGraphBuilderTest {
     void buildNFA04() throws IOException {
         RegexExp regexExpression = RegexParser.parse("(a|b)*abb");
         String tree = RegexExpTreeFormatter.print(regexExpression);
-        log.info("\n================== tree ================\n{}=====================================", tree);
+        log.debug("\n================== tree ================\n{}=====================================", tree);
         NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext);
         List<String> chart = nfaGraph.toMermaidJsChartLines();
         log.debug("\n================== NFA ================\n{}======================================", nfaGraph.toMermaidJsChart());

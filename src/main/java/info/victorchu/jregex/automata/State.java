@@ -35,7 +35,7 @@ public interface State
      */
     Set<Transition> getTransitions();
 
-    default Set<Transition> getTransitionsOfEdge(Edge edge)
+    default Set<Transition> getTransitionsOfInputEdge(Edge edge)
     {
         return getTransitions().stream().filter(x -> x.getEdge().equals(edge)).collect(Collectors.toSet());
     }
@@ -51,7 +51,6 @@ public interface State
     {
         addTransition(Transition.of(edge, state));
     }
-
     /**
      * 判断是否存在相同边的transition
      *

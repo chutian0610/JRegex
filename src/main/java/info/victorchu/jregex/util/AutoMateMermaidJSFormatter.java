@@ -1,6 +1,7 @@
 package info.victorchu.jregex.util;
 
 import com.google.common.base.Strings;
+import info.victorchu.jregex.automata.dfa.DFAGraph;
 import info.victorchu.jregex.automata.nfa.NFAGraph;
 import info.victorchu.jregex.automata.State;
 import lombok.NonNull;
@@ -49,6 +50,38 @@ public class AutoMateMermaidJSFormatter
         list.add("flowchart LR");
         Set<Integer> markSet = new HashSet<>();
         handleState(nfaGraph.getStart(), list, markSet);
+        return list;
+    }
+
+    /**
+     * 打印NFA状态图(mermaid.js 流程图语法).
+     *
+     * @return
+     * @see <a href="https://mermaid.live/">https://mermaid.live</a>
+     * @see <a href="https://mermaid.js.org/intro/n00b-gettingStarted.html">https://mermaid.js.org/intro/n00b-gettingStarted.html</a>
+     */
+    public String convertDFA2FlowChart(DFAGraph dfaGraph)
+    {
+        List<String> list = new ArrayList<>();
+        list.add("flowchart LR");
+        Set<Integer> markSet = new HashSet<>();
+        handleState(dfaGraph.getStart(), list, markSet);
+        return String.join("\n", list) + "\n";
+    }
+
+    /**
+     * 打印NFA状态图(mermaid.js 流程图语法).
+     *
+     * @return
+     * @see <a href="https://mermaid.live/">https://mermaid.live</a>
+     * @see <a href="https://mermaid.js.org/intro/n00b-gettingStarted.html">https://mermaid.js.org/intro/n00b-gettingStarted.html</a>
+     */
+    public List<String> convertDFA2FlowChartLines(DFAGraph dfaGraph)
+    {
+        List<String> list = new ArrayList<>();
+        list.add("flowchart LR");
+        Set<Integer> markSet = new HashSet<>();
+        handleState(dfaGraph.getStart(), list, markSet);
         return list;
     }
 

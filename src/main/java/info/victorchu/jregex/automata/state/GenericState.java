@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -50,15 +51,24 @@ public class GenericState implements State {
         this.deterministic = deterministic;
     }
 
+    public GenericState(int stateId, boolean deterministic, boolean accept)
+    {
+        this.stateId = stateId;
+        this.deterministic = deterministic;
+        this.accept = accept;
+    }
+
+
     @Override
     public Set<Transition> getTransitions() {
         return transitionSet;
     }
 
     @Override
-    public Set<Transition> getTransitionsOfEdge(Edge edge)
+    public Set<Transition> getTransitionsOfInputEdge(Edge edge)
     {
-        return edge2TransitionMap.get(edge);
+        Set<Transition> set = edge2TransitionMap.get(edge);
+        return set == null ? new HashSet<>() : set;
     }
 
     @Override

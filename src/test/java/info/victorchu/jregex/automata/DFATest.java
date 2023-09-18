@@ -13,7 +13,7 @@ import java.io.IOException;
  * @author victorchu
  */
 public class DFATest {
-    private static final Logger log = LoggerFactory.getLogger(NFATest.class);
+    private static final Logger log = LoggerFactory.getLogger(NFAGraphTest.class);
 
     @Test
     void minimizationDFA01()
