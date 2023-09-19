@@ -39,7 +39,6 @@ class NFAGraphBuilderTest {
         NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext);
         List<String> chart = nfaGraph.toMermaidJsChartLines();
         log.debug("\n================== NFA ================\n{}======================================", nfaGraph.toMermaidJsChart());
-//        log.debug(chart2ExpectString(chart));
         assertThat(
                 Lists.newArrayList("flowchart LR",
                         "s_0(0)-->|'a'|s_1(1)",
@@ -49,14 +48,14 @@ class NFAGraphBuilderTest {
     }
 
     @Test
-    void buildNFA02() throws IOException {
+    void buildNFA02()
+    {
         RegexExp regexExpression = RegexParser.parse("a|b");
         String tree = RegexExpTreeFormatter.print(regexExpression);
         log.debug("\n================== tree ================\n{}=====================================", tree);
         NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext);
         List<String> chart = nfaGraph.toMermaidJsChartLines();
         log.debug("\n================== NFA ================\n{}======================================", nfaGraph.toMermaidJsChart());
-//        log.debug(chart2ExpectString(chart));
         assertThat(
                 Lists.newArrayList("flowchart LR",
                         "s_0(0)-->|ϵ|s_1(1)",
@@ -69,14 +68,14 @@ class NFAGraphBuilderTest {
     }
 
     @Test
-    void buildNFA03() throws IOException {
+    void buildNFA03()
+    {
         RegexExp regexExpression = RegexParser.parse("a*b");
         String tree = RegexExpTreeFormatter.print(regexExpression);
         log.debug("\n================== tree ================\n{}=====================================", tree);
         NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext);
         List<String> chart = nfaGraph.toMermaidJsChartLines();
         log.debug("\n================== NFA ================\n{}======================================", nfaGraph.toMermaidJsChart());
-//        log.debug(chart2ExpectString(chart));
         assertThat(
                 Lists.newArrayList("flowchart LR",
                         "s_0(0)-->|ϵ|s_1(1)",
@@ -97,7 +96,6 @@ class NFAGraphBuilderTest {
         NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext);
         List<String> chart = nfaGraph.toMermaidJsChartLines();
         log.debug("\n================== NFA ================\n{}======================================", nfaGraph.toMermaidJsChart());
-//        log.debug(chart2ExpectString(chart));
         assertThat(
                 Lists.newArrayList("flowchart LR",
                         "s_0(0)-->|ϵ|s_7(7)",

@@ -30,5 +30,4 @@ public class DFAGraph
     {
         return AutoMateMermaidJSFormatter.INSTANCE.convertDFA2FlowChart(this);
     }
-
 }

@@ -12,12 +12,13 @@ import java.io.IOException;
 /**
  * @author victorchu
  */
-public class DFATest {
+public class DFATest
+{
     private static final Logger log = LoggerFactory.getLogger(NFAGraphTest.class);
 
     @Test
     void minimizationDFA01()
-            throws IOException {
+    {
         RegexExp regexExpression = RegexParser.parse("ab");
         NFA nfa = NFA.buildNFA(regexExpression);
         DFA dfa = nfa.toDFA();
@@ -30,7 +31,7 @@ public class DFATest {
 
     @Test
     void minimizationDFA02()
-            throws IOException {
+    {
         RegexExp regexExpression = RegexParser.parse("a|b");
         NFA nfa = NFA.buildNFA(regexExpression);
         DFA dfa = nfa.toDFA();
@@ -43,7 +44,7 @@ public class DFATest {
 
     @Test
     void minimizationDFA03()
-            throws IOException {
+    {
         RegexExp regexExpression = RegexParser.parse("a*b");
         NFA nfa = NFA.buildNFA(regexExpression);
         DFA dfa = nfa.toDFA();
@@ -57,7 +58,7 @@ public class DFATest {
 
     @Test
     void minimizationDFA04()
-            throws IOException {
+    {
         RegexExp regexExpression = RegexParser.parse("(a|b)*abb");
         NFA nfa = NFA.buildNFA(regexExpression);
         DFA dfa = nfa.toDFA();

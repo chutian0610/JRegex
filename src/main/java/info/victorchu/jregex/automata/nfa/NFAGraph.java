@@ -83,17 +83,11 @@ public class NFAGraph
         if (!map.isEmpty()) {
             // 设置DFA跳转状态
             map.entrySet().stream()
-                    // 对应edge没有转换
                     .filter((x) -> dfa.getTransitionsOfInputEdge(x.getKey()).isEmpty())
                     .forEach(x -> {
-                        // 给DFA新增转换
-                        if (x.getValue().equals(nfaSet)) {
-                            dfa.addTransition(x.getKey(), start);
-                        }
-                        else {
-                            State state = createDFAState(x.getValue());
-                            dfa.addTransition(x.getKey(), state);
-                        }
+                        // 给DFA设置转换
+                        State state = createDFAState(x.getValue());
+                        dfa.addTransition(x.getKey(), state);
                     });
         }
         return dfa;
