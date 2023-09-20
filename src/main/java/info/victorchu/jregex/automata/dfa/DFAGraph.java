@@ -7,7 +7,7 @@ import info.victorchu.jregex.automata.State;
 import info.victorchu.jregex.util.AutoMateMermaidJSFormatter;
 import info.victorchu.jregex.util.MermaidJsChartGenerator;
 import info.victorchu.jregex.util.Pair;
-import info.victorchu.jregex.util.Transition;
+import info.victorchu.jregex.automata.Transition;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

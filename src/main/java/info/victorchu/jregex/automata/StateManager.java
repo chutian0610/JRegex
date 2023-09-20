@@ -1,7 +1,6 @@
 package info.victorchu.jregex.automata;
 
 import info.victorchu.jregex.RegexContext;
-import info.victorchu.jregex.util.Transition;
 
 import java.util.Optional;
 import java.util.Set;

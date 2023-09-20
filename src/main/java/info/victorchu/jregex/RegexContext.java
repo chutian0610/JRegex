@@ -5,12 +5,9 @@ import info.victorchu.jregex.automata.Edge;
 import info.victorchu.jregex.automata.State;
 import info.victorchu.jregex.automata.StateManager;
 import info.victorchu.jregex.automata.dfa.DFAGraph;
-import info.victorchu.jregex.util.Transition;
+import info.victorchu.jregex.automata.Transition;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;

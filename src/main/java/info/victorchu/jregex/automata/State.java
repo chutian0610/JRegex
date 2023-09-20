@@ -1,7 +1,5 @@
 package info.victorchu.jregex.automata;
 
-import info.victorchu.jregex.util.Transition;
-
 import java.util.Set;
 import java.util.stream.Collectors;
 

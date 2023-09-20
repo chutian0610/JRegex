@@ -8,7 +8,7 @@ import info.victorchu.jregex.automata.dfa.DFAGraph;
 import info.victorchu.jregex.automata.edge.EpsilonEdge;
 import info.victorchu.jregex.util.AutoMateMermaidJSFormatter;
 import info.victorchu.jregex.util.MermaidJsChartGenerator;
-import info.victorchu.jregex.util.Transition;
+import info.victorchu.jregex.automata.Transition;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

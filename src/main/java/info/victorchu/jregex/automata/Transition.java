@@ -1,7 +1,5 @@
-package info.victorchu.jregex.util;
+package info.victorchu.jregex.automata;
 
-import info.victorchu.jregex.automata.Edge;
-import info.victorchu.jregex.automata.State;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 

@@ -3,7 +3,7 @@ package info.victorchu.jregex.automata.state;
 import com.google.common.collect.Sets;
 import info.victorchu.jregex.automata.Edge;
 import info.victorchu.jregex.automata.State;
-import info.victorchu.jregex.util.Transition;
+import info.victorchu.jregex.automata.Transition;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;

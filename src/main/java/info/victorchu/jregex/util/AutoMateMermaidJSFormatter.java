@@ -1,6 +1,6 @@
 package info.victorchu.jregex.util;
 
-import com.google.common.base.Strings;
+import info.victorchu.jregex.automata.Transition;
 import info.victorchu.jregex.automata.dfa.DFAGraph;
 import info.victorchu.jregex.automata.nfa.NFAGraph;
 import info.victorchu.jregex.automata.State;
