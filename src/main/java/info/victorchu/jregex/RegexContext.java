@@ -1,12 +1,16 @@
 package info.victorchu.jregex;
 
+import info.victorchu.jregex.automata.DFAState;
+import info.victorchu.jregex.automata.Edge;
 import info.victorchu.jregex.automata.State;
 import info.victorchu.jregex.automata.StateManager;
 import info.victorchu.jregex.automata.dfa.DFAGraph;
 import info.victorchu.jregex.util.Transition;
-import lombok.Getter;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,7 +31,7 @@ public class RegexContext
      */
     private AtomicInteger nextDFAId;
 
-    @Getter private final StateManager stateManager;
+    private final StateManager stateManager;
 
     public RegexContext(StateManager stateManager)
     {
@@ -62,7 +66,12 @@ public class RegexContext
         return stateManager.tryGetNFAState(id);
     }
 
-    public State createDFAState(Set<Integer> nfaState)
+    public State tryGetDFAState(Integer id)
+    {
+        return stateManager.tryGetDFAState(id);
+    }
+
+    public State createOrGetDFAState(Set<Integer> nfaState)
     {
         return stateManager.createOrGetDFAState(this, nfaState);
     }
@@ -71,6 +80,39 @@ public class RegexContext
     {
         return stateManager.getDFAState(this, nfaState);
     }
+
+    public State createOrGetMinimizationDFAState(Set<Integer> dfaState)
+    {
+        return stateManager.createOrGetMinimizationDFAState(this, dfaState);
+    }
+
+    public Optional<State> getMinimizationDFAState(Set<Integer> dfaState)
+    {
+        return stateManager.getMinimizationDFAState(this, dfaState);
+    }
+
+    public String printDFA2DFAMapping(DFAGraph dfaGraph)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n<<<<<<<<<<<< Min DFA -> DFA >>>>>>>>>>>>>\n");
+        Set<Integer> markSet = new HashSet<>();
+        printDFA2DFAMapping(dfaGraph.getStart(), sb, markSet);
+        return sb.toString();
+    }
+
+    private void printDFA2DFAMapping(State cursor, StringBuilder sb, Set<Integer> markSet)
+    {
+        if (cursor != null && !markSet.contains(cursor.getStateId())) {
+            String nfaStr = String.format("(%s)", stateManager.getMinDFAMappedDFAState(cursor).stream().map(x -> "s_" + x.getStateId()).collect(Collectors.joining(",")));
+            sb.append("s_").append(cursor.getStateId()).append("<==>").append(nfaStr).append("\n");
+            markSet.add(cursor.getStateId());
+            Set<Transition> transitions = cursor.getTransitions();
+            for (Transition transition : transitions) {
+                printDFA2DFAMapping(transition.getState(), sb, markSet);
+            }
+        }
+    }
+
 
     public String printDFA2NFAMapping(DFAGraph dfaGraph)
     {
@@ -84,13 +126,23 @@ public class RegexContext
     private void printDFA2NFAMapping(State cursor, StringBuilder sb, Set<Integer> markSet)
     {
         if (cursor != null && !markSet.contains(cursor.getStateId())) {
-            String nfaStr = String.format("(%s)", stateManager.getDFAMappedNFAState(cursor).stream().map(x -> "ns_" + x.getStateId()).collect(Collectors.joining(",")));
-            sb.append("ds_").append(cursor.getStateId()).append("<==>").append(nfaStr).append("\n");
+            String nfaStr = String.format("(%s)", stateManager.getDFAMappedNFAState(cursor).stream().map(x -> "s_" + x.getStateId()).collect(Collectors.joining(",")));
+            sb.append("s_").append(cursor.getStateId()).append("<==>").append(nfaStr).append("\n");
             markSet.add(cursor.getStateId());
             Set<Transition> transitions = cursor.getTransitions();
             for (Transition transition : transitions) {
                 printDFA2NFAMapping(transition.getState(), sb, markSet);
             }
         }
+    }
+
+    public Set<Edge> getNfAEdges(Set<Integer> set)
+    {
+        return stateManager.getNfAEdges(set);
+    }
+
+    public Set<Edge> getDfAEdges(Set<Integer> set)
+    {
+        return stateManager.getDfAEdges(set);
     }
 }

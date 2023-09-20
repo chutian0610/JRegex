@@ -1,11 +1,11 @@
 package info.victorchu.jregex.automata;
 
 import info.victorchu.jregex.RegexContext;
-import info.victorchu.jregex.automata.edge.EpsilonEdge;
+import info.victorchu.jregex.util.Transition;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -13,6 +13,7 @@ import java.util.stream.Stream;
  */
 public interface StateManager
 {
+    // ===================== NFA ===========================
     State createNFAState(RegexContext context);
 
     Optional<State> getNFAState(Integer id);
@@ -27,6 +28,29 @@ public interface StateManager
     }
 
     /**
+     * 判断 NFA状态集合 S 是否为接受状态。
+     */
+    default boolean isNFASetAccept(Set<Integer> nfaStates)
+    {
+        return nfaStates.stream().flatMap(x -> {
+            Optional<State> y = getNFAState(x);
+            return y.<Stream<? extends State>>map(Stream::of).orElseGet(Stream::empty);
+        }).anyMatch(State::isAccept);
+    }
+
+    /**
+     * 判断 DFA状态集合 S 是否为接受状态。
+     */
+    default boolean isDFASetAccept(Set<Integer> nfaStates)
+    {
+        return nfaStates.stream().flatMap(x -> {
+            Optional<State> y = getDFAState(x);
+            return y.<Stream<? extends State>>map(Stream::of).orElseGet(Stream::empty);
+        }).anyMatch(State::isAccept);
+    }
+
+    // ===================== DFA ==================================
+    /**
      * 根据 NFA 状态集合，创建或获取DFA 状态
      *
      * @param context
@@ -39,6 +63,8 @@ public interface StateManager
 
     Set<State> getDFAMappedNFAState(State dfaState);
 
+    Set<State> getMinDFAMappedDFAState(State dfaState);
+
     Optional<State> getDFAState(Integer id);
 
     default State tryGetDFAState(Integer id)
@@ -50,18 +76,41 @@ public interface StateManager
         return current.get();
     }
 
-    State createMinimizationDFAState(RegexContext context);
-
-    /**
-     * 判断 NFA 状态集合 S 是否为 DFA 的接受状态。
-     */
-    default boolean isNFASetAccept(Set<Integer> nfaStates)
+    default Set<Edge> getNfAEdges(Set<Integer> set)
     {
-        return nfaStates.stream().flatMap(x -> {
-            Optional<State> y = getNFAState(x);
-            return y.<Stream<? extends State>>map(Stream::of).orElseGet(Stream::empty);
-        }).anyMatch(State::isAccept);
+        return set.stream()
+                .map(this::getNFAState)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .flatMap(x -> x.getTransitions().stream())
+                .map(Transition::getEdge)
+                .collect(Collectors.toSet());
     }
 
+    default Set<Edge> getDfAEdges(Set<Integer> set)
+    {
+        return set.stream()
+                .map(this::getDFAState)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .flatMap(x -> x.getTransitions().stream())
+                .map(Transition::getEdge)
+                .collect(Collectors.toSet());
+    }
+
+    State createOrGetMinimizationDFAState(RegexContext context, Set<Integer> dfaStates);
+
+    Optional<State> getMinimizationDFAState(RegexContext context, Set<Integer> dfaStates);
+
+    Optional<State> getMinimizationDFAState(Integer id);
+
+    default State tryGetMinimizationDFAState(Integer id)
+    {
+        Optional<State> current = getMinimizationDFAState(id);
+        if (!current.isPresent()) {
+            throw new IllegalArgumentException("无效的 MIN-DFA StateId:" + id);
+        }
+        return current.get();
+    }
     void reset();
 }

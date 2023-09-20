@@ -27,6 +27,11 @@ public class Transition
     private final Edge edge;
     private final State state;
 
+    public Integer getTargetId()
+    {
+        return state.getStateId();
+    }
+
     @Override
     public String toString()
     {

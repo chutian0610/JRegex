@@ -7,12 +7,12 @@ import info.victorchu.jregex.automata.State;
 import info.victorchu.jregex.automata.dfa.DFAGraph;
 import info.victorchu.jregex.automata.edge.EpsilonEdge;
 import info.victorchu.jregex.util.AutoMateMermaidJSFormatter;
+import info.victorchu.jregex.util.MermaidJsChartGenerator;
 import info.victorchu.jregex.util.Transition;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 @Getter
 @RequiredArgsConstructor(staticName = "of")
 public class NFAGraph
+        implements MermaidJsChartGenerator
 {
     @NonNull
     private State start;
@@ -78,7 +79,7 @@ public class NFAGraph
             return dfaOp.get();
         }
         // 构建NFA集合 对应的DFA节点
-        State dfa = context.createDFAState(nfaSet);
+        State dfa = context.createOrGetDFAState(nfaSet);
         Map<Edge, Set<Integer>> map = findDFAMoveTable(nfaSet);
         if (!map.isEmpty()) {
             // 设置DFA跳转状态
@@ -117,11 +118,8 @@ public class NFAGraph
     private Set<Edge> getAllEdgesOfStateSet(Set<Integer> nfaSet)
     {
         // 获取对当前状态集有效的字符集(排除 epsilon)
-        return nfaSet.stream()
-                .map(x -> context.tryGetNFAState(x))
-                .map(State::getTransitions)
-                .flatMap(Collection::stream)
-                .map(Transition::getEdge)
+        return context.getNfAEdges(nfaSet)
+                .stream()
                 .filter(edge -> edge != EpsilonEdge.INSTANCE)
                 .collect(Collectors.toSet());
     }

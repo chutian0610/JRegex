@@ -7,28 +7,29 @@ import info.victorchu.jregex.util.Transition;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author victorchu
  */
 @Getter
 @Slf4j
+@ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class GenericState implements State {
+public class GenericState
+        implements State
+{
     /**
      * {@code @Immutable}
      */
     @EqualsAndHashCode.Include
+    @ToString.Include
     private final int stateId;
     @Setter
     private boolean accept;
@@ -46,7 +47,8 @@ public class GenericState implements State {
      */
     private final Map<Edge, Set<Transition>> edge2TransitionMap = new HashMap<>();
 
-    public GenericState(int stateId, boolean deterministic) {
+    public GenericState(int stateId, boolean deterministic)
+    {
         this.stateId = stateId;
         this.deterministic = deterministic;
     }
@@ -58,9 +60,9 @@ public class GenericState implements State {
         this.accept = accept;
     }
 
-
     @Override
-    public Set<Transition> getTransitions() {
+    public Set<Transition> getTransitions()
+    {
         return transitionSet;
     }
 
@@ -72,7 +74,8 @@ public class GenericState implements State {
     }
 
     @Override
-    public void addTransition(Transition transition) {
+    public void addTransition(Transition transition)
+    {
         if (isDeterministic() && hasTransitionsOfSameEdge(transition)) {
             log.error("transition must deterministic, insert:{} , already exists: {}",
                     transition, edge2TransitionMap.get(transition.getEdge()));
@@ -82,18 +85,21 @@ public class GenericState implements State {
         indexEdgeTransitionMap(transition);
     }
 
-    private void indexEdgeTransitionMap(Transition transition) {
+    private void indexEdgeTransitionMap(Transition transition)
+    {
         if (edge2TransitionMap.containsKey(transition.getEdge())) {
             Set<Transition> set = edge2TransitionMap.get(transition.getEdge());
             set.add(transition);
-        } else {
+        }
+        else {
             edge2TransitionMap.put(transition.getEdge(), Sets.newHashSet(transition));
         }
     }
 
     @Override
-    public boolean hasTransitionsOfSameEdge(Transition transition) {
-        if(edge2TransitionMap.containsKey(transition.getEdge())){
+    public boolean hasTransitionsOfSameEdge(Transition transition)
+    {
+        if (edge2TransitionMap.containsKey(transition.getEdge())) {
             return edge2TransitionMap.get(transition.getEdge()).stream().anyMatch(x -> !x.equals(transition));
         }
         return false;
