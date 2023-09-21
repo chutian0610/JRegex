@@ -5,6 +5,11 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
+ * subGraph
+ * <pre>
+ *  -- inEdge-->start  ... ... ->end)
+ * </pre>
+
  * @author victorchu
  */
 @RequiredArgsConstructor(staticName = "of")
