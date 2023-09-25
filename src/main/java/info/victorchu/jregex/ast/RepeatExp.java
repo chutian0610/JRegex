@@ -1,27 +1,48 @@
 package info.victorchu.jregex.ast;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * 重复 expression.
  *
  * @author victorchutian
  */
-@Builder
 @Getter
 @Setter
+@SuperBuilder
 public class RepeatExp
         extends RegexExp
 {
-    public RepeatExp(RegexExp inner)
+    public RepeatExp(NodeType nodeType,RegexExp inner)
     {
-        super(NodeType.REGEXP_REPEAT);
+        super(nodeType);
         this.inner = inner;
     }
 
     private RegexExp inner;
+
+    private Integer min;
+    private Integer max;
+
+    public String repeatStr(){
+
+        switch (nodeType) {
+            case REGEXP_REPEAT_MANY:
+                return "*";
+            case REGEXP_REPEAT_PLUS:
+                return "+";
+            case REGEXP_REPEAT_OPTION:
+                return "?";
+            case REGEXP_REPEAT_RANGE:
+            default:
+                if (max == null) {
+                    return String.format("{%d,}", min);
+                }
+                return String.format("{%d,%d}", min, max);
+        }
+    }
 
     @Override
     public <T, C> T accept(RegexExpVisitor<T, C> visitor, C context)

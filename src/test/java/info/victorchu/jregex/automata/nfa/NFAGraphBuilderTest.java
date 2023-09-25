@@ -1,13 +1,11 @@
 package info.victorchu.jregex.automata.nfa;
 
 import com.google.common.collect.Lists;
-import info.victorchu.jregex.util.RegexTestContext;
 import info.victorchu.jregex.ast.RegexExp;
 import info.victorchu.jregex.ast.RegexParser;
-import info.victorchu.jregex.automata.nfa.NFAGraph;
-import info.victorchu.jregex.automata.nfa.NFAGraphBuilder;
 import info.victorchu.jregex.automata.state.GenericStateManager;
 import info.victorchu.jregex.util.RegexExpTreeFormatter;
+import info.victorchu.jregex.util.RegexTestContext;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -114,6 +112,84 @@ class NFAGraphBuilderTest {
                         "s_1(1)-->|ϵ|s_2(2)",
                         "s_2(2)-->|'a'|s_3(3)",
                         "s_3(3)-->|ϵ|s_6(6)"),
+                containsInAnyOrder(chart));
+    }
+    @Test
+    void buildNFA05()
+    {
+        RegexExp regexExpression = RegexParser.parse("a+b");
+        String tree = RegexExpTreeFormatter.print(regexExpression);
+        log.debug("\n================== tree ================\n{}=====================================", tree);
+        NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext.getStateManager());
+        List<String> chart = nfaGraph.toMermaidJsChartLines();
+        log.debug("\n================== NFA ================\n{}======================================", nfaGraph.toMermaidJsChart());
+        assertThat(
+                Lists.newArrayList("flowchart LR", "s_0(0)-->|ϵ|s_1(1)", "s_1(1)-->|'a'|s_2(2)", "s_2(2)-->|ϵ|s_3(3)", "s_3(3)-->|ϵ|s_4(4)", "s_4(4)-->|'b'|s_5((5))", "s_2(2)-->|ϵ|s_1(1)"),
+                containsInAnyOrder(chart));
+    }
+    @Test
+    void buildNFA06()
+    {
+        RegexExp regexExpression = RegexParser.parse("a?b");
+        String tree = RegexExpTreeFormatter.print(regexExpression);
+        log.debug("\n================== tree ================\n{}=====================================", tree);
+        NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext.getStateManager());
+        List<String> chart = nfaGraph.toMermaidJsChartLines();
+        log.debug("\n================== NFA ================\n{}======================================", nfaGraph.toMermaidJsChart());
+        assertThat(
+                Lists.newArrayList("flowchart LR", "s_0(0)-->|ϵ|s_1(1)", "s_1(1)-->|'a'|s_2(2)", "s_2(2)-->|ϵ|s_3(3)", "s_3(3)-->|ϵ|s_4(4)", "s_4(4)-->|'b'|s_5((5))", "s_0(0)-->|ϵ|s_3(3)"),
+                containsInAnyOrder(chart));
+    }
+    @Test
+    void buildNFA07()
+    {
+        RegexExp regexExpression = RegexParser.parse("a{1,2}b");
+        String tree = RegexExpTreeFormatter.print(regexExpression);
+        log.debug("\n================== tree ================\n{}=====================================", tree);
+        NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext.getStateManager());
+        List<String> chart = nfaGraph.toMermaidJsChartLines();
+        log.debug("\n================== NFA ================\n{}======================================", nfaGraph.toMermaidJsChart());
+        assertThat(
+                Lists.newArrayList("flowchart LR", "s_0(0)-->|ϵ|s_1(1)", "s_1(1)-->|'a'|s_2(2)", "s_2(2)-->|ϵ|s_5(5)", "s_5(5)-->|ϵ|s_6(6)", "s_6(6)-->|'b'|s_7((7))", "s_2(2)-->|ϵ|s_3(3)", "s_3(3)-->|'a'|s_4(4)", "s_4(4)-->|ϵ|s_5(5)"),
+                containsInAnyOrder(chart));
+    }
+    @Test
+    void buildNFA08()
+    {
+        RegexExp regexExpression = RegexParser.parse("a{2}b");
+        String tree = RegexExpTreeFormatter.print(regexExpression);
+        log.debug("\n================== tree ================\n{}=====================================", tree);
+        NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext.getStateManager());
+        List<String> chart = nfaGraph.toMermaidJsChartLines();
+        log.debug("\n================== NFA ================\n{}======================================", nfaGraph.toMermaidJsChart());
+        assertThat(
+                Lists.newArrayList("flowchart LR", "s_0(0)-->|ϵ|s_1(1)", "s_1(1)-->|'a'|s_2(2)", "s_2(2)-->|ϵ|s_3(3)", "s_3(3)-->|'a'|s_4(4)", "s_4(4)-->|ϵ|s_5(5)", "s_5(5)-->|ϵ|s_6(6)", "s_6(6)-->|'b'|s_7((7))"),
+                containsInAnyOrder(chart));
+    }
+    @Test
+    void buildNFA09()
+    {
+        RegexExp regexExpression = RegexParser.parse("a{2,}b");
+        String tree = RegexExpTreeFormatter.print(regexExpression);
+        log.debug("\n================== tree ================\n{}=====================================", tree);
+        NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext.getStateManager());
+        List<String> chart = nfaGraph.toMermaidJsChartLines();
+        log.debug("\n================== NFA ================\n{}======================================", nfaGraph.toMermaidJsChart());
+        assertThat(
+                Lists.newArrayList("flowchart LR", "s_0(0)-->|ϵ|s_1(1)", "s_1(1)-->|'a'|s_2(2)", "s_2(2)-->|ϵ|s_3(3)", "s_3(3)-->|'a'|s_4(4)", "s_4(4)-->|ϵ|s_5(5)", "s_5(5)-->|ϵ|s_6(6)", "s_6(6)-->|'b'|s_7((7))", "s_4(4)-->|ϵ|s_3(3)"),
+                containsInAnyOrder(chart));
+    }
+    @Test
+    void buildNFA10()
+    {
+        RegexExp regexExpression = RegexParser.parse("a{0,2}b");
+        String tree = RegexExpTreeFormatter.print(regexExpression);
+        log.debug("\n================== tree ================\n{}=====================================", tree);
+        NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext.getStateManager());
+        List<String> chart = nfaGraph.toMermaidJsChartLines();
+        log.debug("\n================== NFA ================\n{}======================================", nfaGraph.toMermaidJsChart());
+        assertThat(
+                Lists.newArrayList("flowchart LR", "s_0(0)-->|ϵ|s_5(5)", "s_5(5)-->|ϵ|s_6(6)", "s_6(6)-->|'b'|s_7((7))", "s_0(0)-->|ϵ|s_1(1)", "s_1(1)-->|'a'|s_2(2)", "s_2(2)-->|ϵ|s_3(3)", "s_3(3)-->|'a'|s_4(4)", "s_4(4)-->|ϵ|s_5(5)"),
                 containsInAnyOrder(chart));
     }
 }

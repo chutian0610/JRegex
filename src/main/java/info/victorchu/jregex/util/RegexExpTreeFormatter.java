@@ -198,7 +198,7 @@ public class RegexExpTreeFormatter
         @Override
         public String visitChar(CharExp node, Void context)
         {
-            return "[Char] : " + node.getCharacter();
+            return String.format("[Char:%s]",node.getCharacter());
         }
 
         @Override
@@ -216,7 +216,7 @@ public class RegexExpTreeFormatter
         @Override
         public String visitRepeat(RepeatExp node, Void context)
         {
-            return "[Repeat]";
+            return String.format("[Repeat:%s]",node.repeatStr());
         }
     }
 }

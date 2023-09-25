@@ -19,14 +19,14 @@ class RegexParserTest {
         log.debug("\n================== tree ================\n{}======================================", tree);
         Assertions.assertEquals("[Or]\n" +
                 "├──[Concat]\n" +
-                "│  ├──[Char] : a\n" +
+                "│  ├──[Char:a]\n" +
                 "│  └──[Concat]\n" +
-                "│     ├──[Repeat]\n" +
-                "│     │  └──[Char] : b\n" +
-                "│     └──[Char] : c\n" +
+                "│     ├──[Repeat:*]\n" +
+                "│     │  └──[Char:b]\n" +
+                "│     └──[Char:c]\n" +
                 "└──[Concat]\n" +
-                "   ├──[Char] : b\n" +
-                "   └──[Char] : c\n", tree);
+                "   ├──[Char:b]\n" +
+                "   └──[Char:c]\n", tree);
     }
 
     @Test
@@ -38,14 +38,14 @@ class RegexParserTest {
         Assertions.assertEquals("[Or]\n" +
                 "├──[Concat]\n" +
                 "│  ├──[Or]\n" +
-                "│  │  ├──[Char] : A\n" +
-                "│  │  └──[Char] : a\n" +
+                "│  │  ├──[Char:A]\n" +
+                "│  │  └──[Char:a]\n" +
                 "│  └──[Concat]\n" +
-                "│     ├──[Repeat]\n" +
-                "│     │  └──[Char] : b\n" +
-                "│     └──[Char] : c\n" +
+                "│     ├──[Repeat:*]\n" +
+                "│     │  └──[Char:b]\n" +
+                "│     └──[Char:c]\n" +
                 "└──[Concat]\n" +
-                "   ├──[Char] : b\n" +
-                "   └──[Char] : c\n", tree);
+                "   ├──[Char:b]\n" +
+                "   └──[Char:c]\n", tree);
     }
 }

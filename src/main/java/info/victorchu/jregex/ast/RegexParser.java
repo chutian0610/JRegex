@@ -11,6 +11,7 @@ package info.victorchu.jregex.ast;
  * {@literal <unionexp>} ::= {@literal <concatexp>} {@literal <unionexp>}
  *              | {@literal <concatexp>}
  * {@literal <concatexp>} ::= {@literal <repeatexp>} '*'
+ *              | {@literal <repeatexp>} '+'
  *              | {@literal <repeatexp>}
  * {@literal <repeatexp>} := {@literal <charexp>}
  *               | '(' {@literal <regexexp>} ')'
@@ -132,8 +133,39 @@ public class RegexParser
     private RegexExp parseConcatExp()
     {
         RegexExp regexExp = parseRepeatExp();
-        if (matchChar('*')) {
-            return RepeatExp.builder().inner(regexExp).build();
+        while (peek("?*+{")) {
+            if (matchChar('?'))
+                return RepeatExp.builder().nodeType(NodeType.REGEXP_REPEAT_OPTION).min(0).max(1).inner(regexExp).build();
+            else if (matchChar('*'))
+                return RepeatExp.builder().nodeType(NodeType.REGEXP_REPEAT_MANY).min(0).inner(regexExp).build();
+            else if (matchChar('+'))
+                return RepeatExp.builder().nodeType(NodeType.REGEXP_REPEAT_PLUS).min(1).inner(regexExp).build();
+            else if (matchChar('{')) {
+                int start = position;
+                while (peek("0123456789")) {
+                    next();
+                }
+                if (start == position)
+                    throw new IllegalArgumentException("integer expected at position " + position);
+                int n = Integer.parseInt(regexStr.substring(start, position));
+                int m = -1;
+                if (matchChar(',')) {
+                    start = position;
+                    while (peek("0123456789")) {
+                        next();
+                    }
+                    if (start != position)
+                        m = Integer.parseInt(regexStr.substring(start, position));
+                } else {
+                    m = n;
+                }
+                if (!matchChar('}'))
+                    throw new IllegalArgumentException("expected '}' at position " + position);
+                if (m == -1)
+                    return RepeatExp.builder().nodeType(NodeType.REGEXP_REPEAT_RANGE).min(n).inner(regexExp).build();
+                else
+                    return RepeatExp.builder().nodeType(NodeType.REGEXP_REPEAT_RANGE).min(n).max(m).inner(regexExp).build();
+            }
         }
         return regexExp;
     }

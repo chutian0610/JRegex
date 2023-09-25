@@ -1,6 +1,7 @@
 package info.victorchu.jregex.ast;
 
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Regex expression 的抽象父类
@@ -8,6 +9,7 @@ import lombok.Getter;
  * @author victorchutian
  */
 @Getter
+@SuperBuilder
 public abstract class RegexExp
 {
 
@@ -25,28 +27,5 @@ public abstract class RegexExp
      * @return 返回 T
      */
     public abstract <T, C> T accept(RegexExpVisitor<T, C> visitor, C context);
-
-    /**
-     * 节点类型
-     */
-    public enum NodeType
-    {
-        /**
-         * s|t 或
-         */
-        REGEX_OR,
-        /**
-         * st 连接
-         */
-        REGEX_CONCAT,
-        /**
-         * s* 重复
-         */
-        REGEXP_REPEAT,
-        /**
-         * 字符
-         */
-        REGEXP_CHAR
-    }
 }
 

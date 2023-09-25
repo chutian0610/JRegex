@@ -2,6 +2,7 @@ package info.victorchu.jregex.automata.nfa;
 
 import info.victorchu.jregex.ast.CharExp;
 import info.victorchu.jregex.ast.ConcatExp;
+import info.victorchu.jregex.ast.NodeType;
 import info.victorchu.jregex.ast.OrExp;
 import info.victorchu.jregex.ast.RegexExp;
 import info.victorchu.jregex.ast.RegexExpVisitor;
@@ -57,18 +58,72 @@ public class NFAGraphBuilder
     public SubGraph visitRepeat(RepeatExp node, StateManager context)
     {
         State begin = context.createNFAState();
-        SubGraph subNFA = process(node.getInner(), context);
-        State end = context.createNFAState();
+        if (0 ==node.getMin() && node.getMax() !=null && 0== node.getMax()) {
+            // 特殊情况
+            State end = context.createNFAState();
+            // 0次
+            begin.addTransition(Edge.epsilon(), end);
+            return SubGraph.of(Edge.epsilon(), begin, end);
+        }
 
-        // 一次
-        begin.addTransition(subNFA.getInEdge(), subNFA.getStart());
-        subNFA.getEnd().addTransition(Edge.epsilon(), end);
-        // 多次
-        subNFA.getEnd().addTransition(Edge.epsilon(), subNFA.getStart());
-
-        // 0次
-        begin.addTransition(Edge.epsilon(), end);
-        return SubGraph.of(Edge.epsilon(), begin, end);
+        if(node.getMax() ==null){
+            int min = node.getMin();
+            SubGraph middle= null;
+            int length = (min>0?min:1);
+            for (int i = 0; i < length; i++) {
+                SubGraph subNFA = process(node.getInner(), context);
+                if(middle ==null){
+                    middle = subNFA;
+                }else {
+                    middle.getEnd().addTransition(subNFA.getInEdge(), subNFA.getStart());
+                    middle = SubGraph.of(middle.getInEdge(), middle.getStart(), subNFA.getEnd());
+                }
+                if(i == length-1){
+                    subNFA.getEnd().addTransition(Edge.epsilon(), subNFA.getStart());
+                }
+            }
+            State end = context.createNFAState();
+            if (node.getMin() == 0) {
+                // 0次
+                begin.addTransition(Edge.epsilon(), end);
+            }
+            if(middle !=null) {
+                begin.addTransition(middle.getInEdge(), middle.getStart());
+                middle.getEnd().addTransition(Edge.epsilon(), end);
+            }
+            return SubGraph.of(Edge.epsilon(), begin, end);
+        }else {
+            int max = node.getMax();
+            int min = node.getMin();
+            State fastJump = null;
+            SubGraph middle= null;
+            for (int i = 0; i < max; i++) {
+                SubGraph subNFA = process(node.getInner(), context);
+                if(middle ==null){
+                    middle = subNFA;
+                }else {
+                    middle.getEnd().addTransition(subNFA.getInEdge(), subNFA.getStart());
+                    middle = SubGraph.of(middle.getInEdge(), middle.getStart(), subNFA.getEnd());
+                }
+                if(min !=0 && i == min - 1 && min !=max){
+                    fastJump = subNFA.getEnd();
+                }
+            }
+            State end = context.createNFAState();
+            if (node.getMin() == 0) {
+                // 0次
+                begin.addTransition(Edge.epsilon(), end);
+            }else {
+                if(fastJump!= null){
+                    fastJump.addTransition(Edge.epsilon(),end);
+                }
+            }
+            if(middle!=null) {
+                begin.addTransition(middle.getInEdge(), middle.getStart());
+                middle.getEnd().addTransition(Edge.epsilon(), end);
+            }
+            return SubGraph.of(Edge.epsilon(), begin, end);
+        }
     }
 
     @Override
