@@ -1,4 +1,4 @@
-package info.victorchu.jregex.automata;
+package info.victorchu.jregex.automata.nfa;
 
 import com.google.common.collect.Lists;
 import info.victorchu.jregex.util.RegexTestContext;
