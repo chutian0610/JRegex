@@ -1,9 +1,9 @@
 package info.victorchu.jregex.automata.dfa;
 
 import com.google.common.collect.Sets;
-import info.victorchu.jregex.RegexContext;
 import info.victorchu.jregex.automata.Edge;
 import info.victorchu.jregex.automata.State;
+import info.victorchu.jregex.automata.StateManager;
 import info.victorchu.jregex.util.AutoMateMermaidJSFormatter;
 import info.victorchu.jregex.util.MermaidJsChartGenerator;
 import info.victorchu.jregex.util.Pair;
@@ -31,7 +31,7 @@ public class DFAGraph
         implements MermaidJsChartGenerator
 {
     @NonNull private State start;
-    @NonNull private RegexContext context;
+    @NonNull private StateManager stateManager;
 
     public List<String> toMermaidJsChartLines()
     {
@@ -58,19 +58,19 @@ public class DFAGraph
         trySplitSet(sets, dfaStateSetIndexMap);
         Set<Integer> stateSet = searchDFAIndexMap(this.start.getStateId(), dfaStateSetIndexMap);
         State start = createMinimizationDFAState(stateSet, dfaStateSetIndexMap);
-        return new DFAGraph(start, context);
+        return new DFAGraph(start, stateManager);
     }
 
     private State createMinimizationDFAState(Set<Integer> stateSet, Map<Integer, Set<Integer>> dfaStateSetIndexMap)
     {
         // 防止循环递归
-        if (context.getMinimizationDFAState(stateSet).isPresent()) {
-            return context.getMinimizationDFAState(stateSet).get();
+        if (stateManager.getMinimizationDFAState(stateSet).isPresent()) {
+            return stateManager.getMinimizationDFAState(stateSet).get();
         }
-        State minState = context.createOrGetMinimizationDFAState(stateSet);
-        context.getDfAEdges(stateSet).forEach(edge -> {
+        State minState = stateManager.createOrGetMinimizationDFAState(stateSet);
+        stateManager.getDfAEdges(stateSet).forEach(edge -> {
             stateSet.forEach(item -> {
-                context.tryGetDFAState(item).getTransitionsOfInputEdge(edge).forEach(transition -> {
+                stateManager.tryGetDFAState(item).getTransitionsOfInputEdge(edge).forEach(transition -> {
                     Set<Integer> toStateSet = searchDFAIndexMap(transition.getTargetId(), dfaStateSetIndexMap);
                     if (toStateSet != stateSet) {
                         State minToState = createMinimizationDFAState(toStateSet, dfaStateSetIndexMap);
@@ -133,14 +133,14 @@ public class DFAGraph
 
     private Collection<Set<Integer>> trySplit(Set<Integer> set, Map<Integer, Set<Integer>> dfaStateSetIndexMap)
     {
-        for (Edge item : context.getDfAEdges(set)) {
+        for (Edge item : stateManager.getDfAEdges(set)) {
             // 去向集合 <-> 状态分组
             Map<Set<Integer>, Set<Integer>> mapping = new HashMap<>();
             // 空集状态分组
             // 如果当前状态没有对应edge的转换状态，记录到emptyTransition中
             Set<Integer> emptyTransition = new HashSet<>();
             for (Integer state : set) {
-                State dfa = context.tryGetDFAState(state);
+                State dfa = stateManager.tryGetDFAState(state);
                 Set<Transition> transitions = dfa.getTransitionsOfInputEdge(item);
                 if (!transitions.isEmpty()) {
                     transitions.forEach(transition -> {
@@ -204,7 +204,7 @@ public class DFAGraph
         marked.add(state);
         Set<Integer> accept = Sets.newHashSet();
         Set<Integer> unAccept = Sets.newHashSet();
-        State dfa = context.tryGetDFAState(state);
+        State dfa = stateManager.tryGetDFAState(state);
         if (dfa.isAccept()) {
             accept.add(state);
         }

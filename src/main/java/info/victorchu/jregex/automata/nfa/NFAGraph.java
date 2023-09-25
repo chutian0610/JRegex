@@ -1,9 +1,9 @@
 package info.victorchu.jregex.automata.nfa;
 
-import info.victorchu.jregex.RegexContext;
 import info.victorchu.jregex.ast.RegexExp;
 import info.victorchu.jregex.automata.Edge;
 import info.victorchu.jregex.automata.State;
+import info.victorchu.jregex.automata.StateManager;
 import info.victorchu.jregex.automata.dfa.DFAGraph;
 import info.victorchu.jregex.automata.edge.EpsilonEdge;
 import info.victorchu.jregex.util.AutoMateMermaidJSFormatter;
@@ -33,7 +33,7 @@ public class NFAGraph
     @NonNull
     private State start;
     @NonNull
-    private RegexContext context;
+    private StateManager stateManager;
 
     public List<String> toMermaidJsChartLines()
     {
@@ -45,9 +45,9 @@ public class NFAGraph
         return AutoMateMermaidJSFormatter.INSTANCE.convertNFA2FlowChart(this);
     }
 
-    public static NFAGraph build(RegexExp regexExp, RegexContext context)
+    public static NFAGraph build(RegexExp regexExp, StateManager stateManager)
     {
-        return NFAGraphBuilder.INSTANCE.apply(regexExp, context);
+        return NFAGraphBuilder.INSTANCE.apply(regexExp, stateManager);
     }
 
     /**
@@ -62,7 +62,11 @@ public class NFAGraph
         // 基于NFA 状态集构建 DFA
         State state = createDFAState(startSet);
         // 构建DFA Graph
-        return DFAGraph.of(state, context);
+        return DFAGraph.of(state, stateManager);
+    }
+
+    public boolean isNFASetAccept(Set<Integer> nfaStates){
+        return stateManager.isNFASetAccept(nfaStates);
     }
 
     /**
@@ -74,12 +78,12 @@ public class NFAGraph
     private State createDFAState(Set<Integer> nfaSet)
     {
         // 防止循环递归
-        Optional<State> dfaOp = context.getDFAState(nfaSet);
+        Optional<State> dfaOp = stateManager.getDFAState(nfaSet);
         if (dfaOp.isPresent()) {
             return dfaOp.get();
         }
         // 构建NFA集合 对应的DFA节点
-        State dfa = context.createOrGetDFAState(nfaSet);
+        State dfa = stateManager.createOrGetDFAState(nfaSet);
         Map<Edge, Set<Integer>> map = findDFAMoveTable(nfaSet);
         if (!map.isEmpty()) {
             // 设置DFA跳转状态
@@ -118,7 +122,7 @@ public class NFAGraph
     private Set<Edge> getAllEdgesOfStateSet(Set<Integer> nfaSet)
     {
         // 获取对当前状态集有效的字符集(排除 epsilon)
-        return context.getNfAEdges(nfaSet)
+        return stateManager.getNfAEdges(nfaSet)
                 .stream()
                 .filter(edge -> edge != EpsilonEdge.INSTANCE)
                 .collect(Collectors.toSet());
@@ -131,11 +135,11 @@ public class NFAGraph
      * @param edge 输入
      * @return
      */
-    private Set<Integer> findDFAMoveSet(Set<Integer> nfaSet, Edge edge)
+    public Set<Integer> findDFAMoveSet(Set<Integer> nfaSet, Edge edge)
     {
         Set<Integer> res = new HashSet<>();
         for (Integer s : nfaSet) {
-            Set<Transition> next = context.tryGetNFAState(s).getTransitionsOfInputEdge(edge);
+            Set<Transition> next = stateManager.tryGetNFAState(s).getTransitionsOfInputEdge(edge);
             if (!next.isEmpty()) {
                 next.forEach(x -> {
                     res.addAll(computeEpsilonClosure(x.getState().getStateId()));
@@ -152,7 +156,7 @@ public class NFAGraph
      * @param state 初始状态Id
      * @return ϵ 闭包
      */
-    private Set<Integer> computeEpsilonClosure(Integer state)
+    public Set<Integer> computeEpsilonClosure(Integer state)
     {
         return dfsComputeEpsilonClosure(state, new HashSet<>());
     }
@@ -166,7 +170,7 @@ public class NFAGraph
      */
     private Set<Integer> dfsComputeEpsilonClosure(Integer state, Set<Integer> marked)
     {
-        State current = context.tryGetNFAState(state);
+        State current = stateManager.tryGetNFAState(state);
         Set<Integer> result = new HashSet<>();
         if (!marked.contains(state)) {
             // 记录当前节点

@@ -1,7 +1,5 @@
 package info.victorchu.jregex.automata;
 
-import info.victorchu.jregex.RegexContext;
-
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -12,8 +10,13 @@ import java.util.stream.Stream;
  */
 public interface StateManager
 {
+    // ================== State ID =========================
+    Integer getNextNFAID();
+
+    Integer getNextDFAID();
+
     // ===================== NFA ===========================
-    State createNFAState(RegexContext context);
+    State createNFAState();
 
     Optional<State> getNFAState(Integer id);
 
@@ -56,9 +59,9 @@ public interface StateManager
      * @param nfaStates
      * @return
      */
-    State createOrGetDFAState(RegexContext context, Set<Integer> nfaStates);
+    State createOrGetDFAState(Set<Integer> nfaStates);
 
-    Optional<State> getDFAState(RegexContext context, Set<Integer> nfaStates);
+    Optional<State> getDFAState(Set<Integer> nfaStates);
 
     Set<State> getDFAMappedNFAState(State dfaState);
 
@@ -97,9 +100,9 @@ public interface StateManager
                 .collect(Collectors.toSet());
     }
 
-    State createOrGetMinimizationDFAState(RegexContext context, Set<Integer> dfaStates);
+    State createOrGetMinimizationDFAState(Set<Integer> dfaStates);
 
-    Optional<State> getMinimizationDFAState(RegexContext context, Set<Integer> dfaStates);
+    Optional<State> getMinimizationDFAState(Set<Integer> dfaStates);
 
     Optional<State> getMinimizationDFAState(Integer id);
 

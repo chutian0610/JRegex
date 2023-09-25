@@ -1,6 +1,5 @@
 package info.victorchu.jregex.automata.state;
 
-import info.victorchu.jregex.RegexContext;
 import info.victorchu.jregex.automata.State;
 import info.victorchu.jregex.automata.StateManager;
 
@@ -8,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,6 +15,16 @@ import java.util.stream.Stream;
  * @author victorchu
  */
 public class GenericStateManager implements StateManager {
+
+    /**
+     * NFA state id generator
+     */
+    private final AtomicInteger nextNFAId = new AtomicInteger(0);
+    /**
+     * DFA state id generator
+     */
+    private final AtomicInteger nextDFAId = new AtomicInteger(0);
+
     private final Map<Integer, State> nfaStateMap = new HashMap<>();
     private final Map<Integer, State> dfaStateMap = new HashMap<>();
     private final Map<Integer, State> minDfaStateMap = new HashMap<>();
@@ -25,9 +35,19 @@ public class GenericStateManager implements StateManager {
     private final Map<Integer, Set<Integer>> minDfa2dfaStateMap = new HashMap<>();
 
 
+    public Integer getNextNFAID()
+    {
+        return nextNFAId.getAndIncrement();
+    }
+
+    public Integer getNextDFAID()
+    {
+        return nextDFAId.getAndIncrement();
+    }
+
     @Override
-    public State createNFAState(RegexContext context) {
-        State nfaState= new GenericState(context.getNextNFAID(),false);
+    public State createNFAState() {
+        State nfaState= new GenericState(getNextNFAID(),false);
         nfaStateMap.put(nfaState.getStateId(), nfaState);
         return nfaState;
     }
@@ -39,13 +59,13 @@ public class GenericStateManager implements StateManager {
     }
 
     @Override
-    public State createOrGetDFAState(RegexContext context, Set<Integer> nfaStates)
+    public State createOrGetDFAState(Set<Integer> nfaStates)
     {
         if (nfa2dfaStateMap.containsKey(nfaStates)) {
             return tryGetDFAState(nfa2dfaStateMap.get(nfaStates));
         }
         else {
-            State dfaState = new GenericState(context.getNextDFAID(), true, isNFASetAccept(nfaStates));
+            State dfaState = new GenericState(getNextDFAID(), true, isNFASetAccept(nfaStates));
             nfa2dfaStateMap.put(nfaStates, dfaState.getStateId());
             dfa2nfaStateMap.put(dfaState.getStateId(), nfaStates);
             dfaStateMap.put(dfaState.getStateId(), dfaState);
@@ -54,7 +74,7 @@ public class GenericStateManager implements StateManager {
     }
 
     @Override
-    public Optional<State> getDFAState(RegexContext context, Set<Integer> nfaStates)
+    public Optional<State> getDFAState(Set<Integer> nfaStates)
     {
         return Optional.ofNullable(nfa2dfaStateMap.get(nfaStates)).flatMap(this::getDFAState);
     }
@@ -84,7 +104,7 @@ public class GenericStateManager implements StateManager {
     }
 
     @Override
-    public State createOrGetMinimizationDFAState(RegexContext context, Set<Integer> dfaStates)
+    public State createOrGetMinimizationDFAState(Set<Integer> dfaStates)
     {
         if (dfa2minDfaStateMap.containsKey(dfaStates)) {
             return tryGetMinimizationDFAState(dfa2minDfaStateMap.get(dfaStates));
@@ -104,7 +124,7 @@ public class GenericStateManager implements StateManager {
     }
 
     @Override
-    public Optional<State> getMinimizationDFAState(RegexContext context, Set<Integer> dfaStates)
+    public Optional<State> getMinimizationDFAState(Set<Integer> dfaStates)
     {
         return Optional.ofNullable(dfa2minDfaStateMap.get(dfaStates)).flatMap(this::getMinimizationDFAState);
     }
@@ -117,6 +137,8 @@ public class GenericStateManager implements StateManager {
 
     @Override
     public void reset() {
+        nextNFAId.getAndSet(0);
+        nextDFAId.getAndSet(0);
         nfaStateMap.clear();
         dfaStateMap.clear();
         minDfaStateMap.clear();

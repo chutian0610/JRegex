@@ -1,6 +1,5 @@
 package info.victorchu.jregex.automata.nfa;
 
-import info.victorchu.jregex.RegexContext;
 import info.victorchu.jregex.ast.CharExp;
 import info.victorchu.jregex.ast.ConcatExp;
 import info.victorchu.jregex.ast.OrExp;
@@ -9,6 +8,7 @@ import info.victorchu.jregex.ast.RegexExpVisitor;
 import info.victorchu.jregex.ast.RepeatExp;
 import info.victorchu.jregex.automata.Edge;
 import info.victorchu.jregex.automata.State;
+import info.victorchu.jregex.automata.StateManager;
 import info.victorchu.jregex.automata.SubGraph;
 
 import java.util.function.BiFunction;
@@ -17,12 +17,12 @@ import java.util.function.BiFunction;
  * @author victorchu
  */
 public class NFAGraphBuilder
-        implements RegexExpVisitor<SubGraph, RegexContext>, BiFunction<RegexExp, RegexContext, NFAGraph>
+        implements RegexExpVisitor<SubGraph, StateManager>, BiFunction<RegexExp, StateManager, NFAGraph>
 {
     public static final NFAGraphBuilder INSTANCE = new NFAGraphBuilder();
 
     @Override
-    public SubGraph visitChar(CharExp node, RegexContext context)
+    public SubGraph visitChar(CharExp node, StateManager context)
     {
         State start = context.createNFAState();
         State charState = context.createNFAState();
@@ -31,7 +31,7 @@ public class NFAGraphBuilder
     }
 
     @Override
-    public SubGraph visitConcat(ConcatExp node, RegexContext context)
+    public SubGraph visitConcat(ConcatExp node, StateManager context)
     {
         SubGraph subNFALeft = process(node.getLeft(), context);
         SubGraph subNFARight = process(node.getRight(), context);
@@ -40,7 +40,7 @@ public class NFAGraphBuilder
     }
 
     @Override
-    public SubGraph visitOr(OrExp node, RegexContext context)
+    public SubGraph visitOr(OrExp node, StateManager context)
     {
         State begin = context.createNFAState();
         SubGraph subNFALeft = process(node.getLeft(), context);
@@ -54,7 +54,7 @@ public class NFAGraphBuilder
     }
 
     @Override
-    public SubGraph visitRepeat(RepeatExp node, RegexContext context)
+    public SubGraph visitRepeat(RepeatExp node, StateManager context)
     {
         State begin = context.createNFAState();
         SubGraph subNFA = process(node.getInner(), context);
@@ -72,10 +72,10 @@ public class NFAGraphBuilder
     }
 
     @Override
-    public NFAGraph apply(RegexExp regexExp, RegexContext context)
+    public NFAGraph apply(RegexExp regexExp, StateManager stateManager)
     {
-        SubGraph subGraph = process(regexExp, context);
+        SubGraph subGraph = process(regexExp, stateManager);
         subGraph.getEnd().setAccept(true);
-        return NFAGraph.of(subGraph.getStart(), context);
+        return NFAGraph.of(subGraph.getStart(), stateManager);
     }
 }

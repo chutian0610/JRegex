@@ -1,36 +1,28 @@
-package info.victorchu.jregex;
+package info.victorchu.jregex.util;
 
-import info.victorchu.jregex.automata.DFAState;
-import info.victorchu.jregex.automata.Edge;
 import info.victorchu.jregex.automata.State;
 import info.victorchu.jregex.automata.StateManager;
-import info.victorchu.jregex.automata.dfa.DFAGraph;
 import info.victorchu.jregex.automata.Transition;
+import info.victorchu.jregex.automata.dfa.DFAGraph;
+import lombok.Getter;
+import org.hamcrest.Matcher;
+import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.Optional;
+import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
  * @author victorchu
  */
-public class RegexContext
+public class RegexTestContext
 {
-
-    /**
-     * NFA state id generator
-     */
-    private AtomicInteger nextNFAId;
-    /**
-     * DFA state id generator
-     */
-    private AtomicInteger nextDFAId;
-
+    @Getter
     private final StateManager stateManager;
 
-    public RegexContext(StateManager stateManager)
+    public RegexTestContext(StateManager stateManager)
     {
         this.stateManager = stateManager;
         reset();
@@ -38,56 +30,15 @@ public class RegexContext
 
     public synchronized void reset()
     {
-        nextNFAId = new AtomicInteger(0);
-        nextDFAId = new AtomicInteger(0);
         stateManager.reset();
     }
 
-    public Integer getNextNFAID()
-    {
-        return nextNFAId.getAndIncrement();
+    public static <T> Matcher<Iterable<? extends T>> containsInAnyOrder(Collection<T> items) {
+        return IsIterableContainingInAnyOrder.<T>containsInAnyOrder((T[]) items.toArray());
     }
-
-    public Integer getNextDFAID()
-    {
-        return nextDFAId.getAndIncrement();
+    public static String chart2ExpectString(List<String> chart){
+        return "\"" + String.join("\",\n\"", chart) + "\"";
     }
-
-    public State createNFAState()
-    {
-        return stateManager.createNFAState(this);
-    }
-
-    public State tryGetNFAState(Integer id)
-    {
-        return stateManager.tryGetNFAState(id);
-    }
-
-    public State tryGetDFAState(Integer id)
-    {
-        return stateManager.tryGetDFAState(id);
-    }
-
-    public State createOrGetDFAState(Set<Integer> nfaState)
-    {
-        return stateManager.createOrGetDFAState(this, nfaState);
-    }
-
-    public Optional<State> getDFAState(Set<Integer> nfaState)
-    {
-        return stateManager.getDFAState(this, nfaState);
-    }
-
-    public State createOrGetMinimizationDFAState(Set<Integer> dfaState)
-    {
-        return stateManager.createOrGetMinimizationDFAState(this, dfaState);
-    }
-
-    public Optional<State> getMinimizationDFAState(Set<Integer> dfaState)
-    {
-        return stateManager.getMinimizationDFAState(this, dfaState);
-    }
-
     public String printDFA2DFAMapping(DFAGraph dfaGraph)
     {
         StringBuilder sb = new StringBuilder();
@@ -110,7 +61,6 @@ public class RegexContext
         }
     }
 
-
     public String printDFA2NFAMapping(DFAGraph dfaGraph)
     {
         StringBuilder sb = new StringBuilder();
@@ -131,15 +81,5 @@ public class RegexContext
                 printDFA2NFAMapping(transition.getState(), sb, markSet);
             }
         }
-    }
-
-    public Set<Edge> getNfAEdges(Set<Integer> set)
-    {
-        return stateManager.getNfAEdges(set);
-    }
-
-    public Set<Edge> getDfAEdges(Set<Integer> set)
-    {
-        return stateManager.getDfAEdges(set);
     }
 }

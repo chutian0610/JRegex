@@ -1,7 +1,7 @@
 package info.victorchu.jregex.automata;
 
 import com.google.common.collect.Lists;
-import info.victorchu.jregex.RegexContext;
+import info.victorchu.jregex.util.RegexTestContext;
 import info.victorchu.jregex.ast.RegexExp;
 import info.victorchu.jregex.ast.RegexParser;
 import info.victorchu.jregex.automata.nfa.NFAGraph;
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.List;
 
-import static info.victorchu.jregex.util.TestUtil.containsInAnyOrder;
+import static info.victorchu.jregex.util.RegexTestContext.containsInAnyOrder;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
@@ -24,7 +24,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @Slf4j
 class NFAGraphBuilderTest {
 
-    private static final RegexContext regexContext = new RegexContext(new GenericStateManager());
+    private static final RegexTestContext regexContext = new RegexTestContext(new GenericStateManager());
 
     @BeforeEach
     void init() {
@@ -36,7 +36,7 @@ class NFAGraphBuilderTest {
         RegexExp regexExpression = RegexParser.parse("ab");
         String tree = RegexExpTreeFormatter.print(regexExpression);
         log.debug("\n================== tree ================\n{}=====================================", tree);
-        NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext);
+        NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext.getStateManager());
         List<String> chart = nfaGraph.toMermaidJsChartLines();
         log.debug("\n================== NFA ================\n{}======================================", nfaGraph.toMermaidJsChart());
         assertThat(
@@ -53,7 +53,7 @@ class NFAGraphBuilderTest {
         RegexExp regexExpression = RegexParser.parse("a|b");
         String tree = RegexExpTreeFormatter.print(regexExpression);
         log.debug("\n================== tree ================\n{}=====================================", tree);
-        NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext);
+        NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext.getStateManager());
         List<String> chart = nfaGraph.toMermaidJsChartLines();
         log.debug("\n================== NFA ================\n{}======================================", nfaGraph.toMermaidJsChart());
         assertThat(
@@ -73,7 +73,7 @@ class NFAGraphBuilderTest {
         RegexExp regexExpression = RegexParser.parse("a*b");
         String tree = RegexExpTreeFormatter.print(regexExpression);
         log.debug("\n================== tree ================\n{}=====================================", tree);
-        NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext);
+        NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext.getStateManager());
         List<String> chart = nfaGraph.toMermaidJsChartLines();
         log.debug("\n================== NFA ================\n{}======================================", nfaGraph.toMermaidJsChart());
         assertThat(
@@ -93,7 +93,7 @@ class NFAGraphBuilderTest {
         RegexExp regexExpression = RegexParser.parse("(a|b)*abb");
         String tree = RegexExpTreeFormatter.print(regexExpression);
         log.debug("\n================== tree ================\n{}=====================================", tree);
-        NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext);
+        NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext.getStateManager());
         List<String> chart = nfaGraph.toMermaidJsChartLines();
         log.debug("\n================== NFA ================\n{}======================================", nfaGraph.toMermaidJsChart());
         assertThat(

@@ -1,7 +1,7 @@
 package info.victorchu.jregex.automata;
 
 import com.google.common.collect.Lists;
-import info.victorchu.jregex.RegexContext;
+import info.victorchu.jregex.util.RegexTestContext;
 import info.victorchu.jregex.ast.RegexExp;
 import info.victorchu.jregex.ast.RegexParser;
 import info.victorchu.jregex.automata.dfa.DFAGraph;
@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static info.victorchu.jregex.util.TestUtil.containsInAnyOrder;
+import static info.victorchu.jregex.util.RegexTestContext.containsInAnyOrder;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
@@ -24,7 +24,7 @@ class NFAGraphTest
 {
     private static final Logger log = LoggerFactory.getLogger(NFAGraphTest.class);
 
-    private static final RegexContext regexContext = new RegexContext(new GenericStateManager());
+    private static final RegexTestContext regexContext = new RegexTestContext(new GenericStateManager());
 
     @BeforeEach
     void init()
@@ -36,7 +36,7 @@ class NFAGraphTest
     void toDFA01()
     {
         RegexExp regexExpression = RegexParser.parse("ab");
-        NFAGraph nfa = NFAGraph.build(regexExpression, regexContext);
+        NFAGraph nfa = NFAGraph.build(regexExpression, regexContext.getStateManager());
         log.debug("\n================== NFA ================\n{}======================================", nfa.toMermaidJsChart());
         DFAGraph dfa = nfa.toDFA();
         log.debug("\n================== DFA ================\n{}======================================", dfa.toMermaidJsChart());
@@ -53,7 +53,7 @@ class NFAGraphTest
     void toDFA02()
     {
         RegexExp regexExpression = RegexParser.parse("a|b");
-        NFAGraph nfa = NFAGraph.build(regexExpression, regexContext);
+        NFAGraph nfa = NFAGraph.build(regexExpression, regexContext.getStateManager());
         log.debug("\n================== NFA ================\n{}======================================", nfa.toMermaidJsChart());
         DFAGraph dfa = nfa.toDFA();
         log.debug("\n================== DFA ================\n{}======================================", dfa.toMermaidJsChart());
@@ -70,7 +70,7 @@ class NFAGraphTest
     void toDFA03()
     {
         RegexExp regexExpression = RegexParser.parse("a*b");
-        NFAGraph nfa = NFAGraph.build(regexExpression, regexContext);
+        NFAGraph nfa = NFAGraph.build(regexExpression, regexContext.getStateManager());
         log.debug("\n================== NFA ================\n{}======================================", nfa.toMermaidJsChart());
         DFAGraph dfa = nfa.toDFA();
         log.debug("\n================== DFA ================\n{}======================================", dfa.toMermaidJsChart());
@@ -89,7 +89,7 @@ class NFAGraphTest
     void toDFA04()
     {
         RegexExp regexExpression = RegexParser.parse("(a|b)*abb");
-        NFAGraph nfa = NFAGraph.build(regexExpression, regexContext);
+        NFAGraph nfa = NFAGraph.build(regexExpression, regexContext.getStateManager());
         log.debug("\n================== NFA ================\n{}======================================", nfa.toMermaidJsChart());
         DFAGraph dfa = nfa.toDFA();
         log.debug("\n================== DFA ================\n{}======================================", dfa.toMermaidJsChart());
