@@ -1,14 +1,11 @@
 package info.victorchu.jregex.automata;
 
+import info.victorchu.jregex.util.Pair;
+
 /**
  * @author victorchu
  */
 public interface GraphMatcher
 {
     boolean matches(String str);
-
-    boolean find(int index, String str);
-    default boolean find(String str){
-        return find(0,str);
-    }
 }

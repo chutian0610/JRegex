@@ -28,11 +28,4 @@ public class NFAGraphMatcher implements GraphMatcher
       }
         return nfaGraph.isNFASetAccept(set);
     }
-
-    @Override
-    public boolean find(int index, String str)
-    {
-        return false;
-    }
-
 }

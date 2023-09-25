@@ -1,5 +1,6 @@
 package info.victorchu.jregex.automata.nfa;
 
+import com.google.common.collect.Sets;
 import info.victorchu.jregex.ast.RegexExp;
 import info.victorchu.jregex.automata.Edge;
 import info.victorchu.jregex.automata.State;
@@ -141,8 +142,9 @@ public class NFAGraph
         for (Integer s : nfaSet) {
             Set<Transition> next = stateManager.tryGetNFAState(s).getTransitionsOfInputEdge(edge);
             if (!next.isEmpty()) {
+                Set<Integer> marked = Sets.newHashSet();
                 next.forEach(x -> {
-                    res.addAll(computeEpsilonClosure(x.getState().getStateId()));
+                    res.addAll(computeEpsilonClosure(x.getState().getStateId(),marked));
                 });
             }
         }
@@ -159,6 +161,11 @@ public class NFAGraph
     public Set<Integer> computeEpsilonClosure(Integer state)
     {
         return dfsComputeEpsilonClosure(state, new HashSet<>());
+    }
+
+    private Set<Integer> computeEpsilonClosure(Integer state,Set<Integer> marked)
+    {
+        return dfsComputeEpsilonClosure(state, Sets.newHashSet(marked));
     }
 
     /**

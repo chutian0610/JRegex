@@ -136,7 +136,7 @@ public class DFAGraph
         for (Edge item : stateManager.getDfAEdges(set)) {
             // 去向集合 <-> 状态分组
             Map<Set<Integer>, Set<Integer>> mapping = new HashMap<>();
-            // 空集状态分组
+            // 空集状态分组(死状态)
             // 如果当前状态没有对应edge的转换状态，记录到emptyTransition中
             Set<Integer> emptyTransition = new HashSet<>();
             for (Integer state : set) {
