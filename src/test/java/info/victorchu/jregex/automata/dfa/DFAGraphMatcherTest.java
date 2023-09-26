@@ -74,7 +74,7 @@ class DFAGraphMatcherTest
     }
 
     @Test
-    void matches05()
+    void matchesRepeat01()
     {
         RegexExp regexExpression = RegexParser.parse("a*b");
         NFAGraph nfa = NFAGraph.build(regexExpression, regexContext.getStateManager());
@@ -85,7 +85,7 @@ class DFAGraphMatcherTest
     }
 
     @Test
-    void matches06()
+    void matchesRepeat02()
     {
         RegexExp regexExpression = RegexParser.parse("a*b");
         NFAGraph nfa = NFAGraph.build(regexExpression, regexContext.getStateManager());
@@ -93,6 +93,50 @@ class DFAGraphMatcherTest
         DFAGraph minDfa = dfa.simplify();
         DFAGraphMatcher dfaGraphMatcher = new DFAGraphMatcher(minDfa);
         Assertions.assertTrue(dfaGraphMatcher.matches("aaaaaaaaaaaaaaaaaaaaaab"));
+    }
+
+    @Test
+    void matchesRepeat03()
+    {
+        RegexExp regexExpression = RegexParser.parse("a+b");
+        NFAGraph nfa = NFAGraph.build(regexExpression, regexContext.getStateManager());
+        DFAGraph dfa = nfa.toDFA();
+        DFAGraph minDfa = dfa.simplify();
+        DFAGraphMatcher dfaGraphMatcher = new DFAGraphMatcher(minDfa);
+        Assertions.assertFalse(dfaGraphMatcher.matches("b"));
+    }
+
+    @Test
+    void matchesRepeat04()
+    {
+        RegexExp regexExpression = RegexParser.parse("a+b");
+        NFAGraph nfa = NFAGraph.build(regexExpression, regexContext.getStateManager());
+        DFAGraph dfa = nfa.toDFA();
+        DFAGraph minDfa = dfa.simplify();
+        DFAGraphMatcher dfaGraphMatcher = new DFAGraphMatcher(minDfa);
+        Assertions.assertTrue(dfaGraphMatcher.matches("ab"));
+    }
+
+    @Test
+    void matchesRepeat05()
+    {
+        RegexExp regexExpression = RegexParser.parse("a{2,4}b");
+        NFAGraph nfa = NFAGraph.build(regexExpression, regexContext.getStateManager());
+        DFAGraph dfa = nfa.toDFA();
+        DFAGraph minDfa = dfa.simplify();
+        DFAGraphMatcher dfaGraphMatcher = new DFAGraphMatcher(minDfa);
+        Assertions.assertTrue(dfaGraphMatcher.matches("aaab"));
+    }
+
+    @Test
+    void matchesRepeat06()
+    {
+        RegexExp regexExpression = RegexParser.parse("a{2,4}b");
+        NFAGraph nfa = NFAGraph.build(regexExpression, regexContext.getStateManager());
+        DFAGraph dfa = nfa.toDFA();
+        DFAGraph minDfa = dfa.simplify();
+        DFAGraphMatcher dfaGraphMatcher = new DFAGraphMatcher(minDfa);
+        Assertions.assertFalse(dfaGraphMatcher.matches("aaaaab"));
     }
 
     @Test

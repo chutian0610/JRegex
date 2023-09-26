@@ -12,6 +12,8 @@ import info.victorchu.jregex.automata.State;
 import info.victorchu.jregex.automata.StateManager;
 import info.victorchu.jregex.automata.SubGraph;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiFunction;
 
 /**
@@ -95,7 +97,7 @@ public class NFAGraphBuilder
         }else {
             int max = node.getMax();
             int min = node.getMin();
-            State fastJump = null;
+            List<State> fastJump = new ArrayList<>();
             SubGraph middle= null;
             for (int i = 0; i < max; i++) {
                 SubGraph subNFA = process(node.getInner(), context);
@@ -105,18 +107,17 @@ public class NFAGraphBuilder
                     middle.getEnd().addTransition(subNFA.getInEdge(), subNFA.getStart());
                     middle = SubGraph.of(middle.getInEdge(), middle.getStart(), subNFA.getEnd());
                 }
-                if(min !=0 && i == min - 1 && min !=max){
-                    fastJump = subNFA.getEnd();
+                if (i >= min - 1 && i != max - 1) {
+                    fastJump.add(subNFA.getEnd());
                 }
             }
             State end = context.createNFAState();
             if (node.getMin() == 0) {
                 // 0次
                 begin.addTransition(Edge.epsilon(), end);
-            }else {
-                if(fastJump!= null){
-                    fastJump.addTransition(Edge.epsilon(),end);
-                }
+            }
+            if (!fastJump.isEmpty()) {
+                fastJump.forEach(x -> x.addTransition(Edge.epsilon(), end));
             }
             if(middle!=null) {
                 begin.addTransition(middle.getInEdge(), middle.getStart());
