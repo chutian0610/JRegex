@@ -6,15 +6,18 @@ package info.victorchu.jregex.ast;
  * <pre>
  * bnf 语法，递归下降
  *
- * {@literal <regex>} ::= {@literal <unionexp>} '|' {@literal <regex>}
- *              | {@literal <unionexp>}
- * {@literal <unionexp>} ::= {@literal <concatexp>} {@literal <unionexp>}
+ * {@literal <regex>} ::= {@literal <unionexp>}
+ * {@literal <unionexp>} ::= {@literal <concatexp>} '|' {@literal <unionexp>}
  *              | {@literal <concatexp>}
- * {@literal <concatexp>} ::= {@literal <repeatexp>} '*'
- *              | {@literal <repeatexp>} '+'
+ * {@literal <concatexp>} ::= {@literal <repeatexp>} {@literal <concatexp>}
  *              | {@literal <repeatexp>}
- * {@literal <repeatexp>} := {@literal <charexp>}
- *               | '(' {@literal <regexexp>} ')'
+ * {@literal <concatexp>} ::= {@literal <repeatexp>} ('*' | '+' |'?')
+ *              | {@literal <repeatexp>} '{' {@literal <number>} '}'
+ *              | {@literal <repeatexp>} '{' {@literal <number>} ',' '}'
+ *              | {@literal <repeatexp>} '{' {@literal <number>} ',' {@literal <number>} '}'
+ *              | {@literal <atomexp>}
+ * {@literal <atomexp>} := {@literal <charexp>}
+ *               | '(' {@literal <unionexp>} ')'
  * {@literal <charexp>} ::= {@literal <Unicode character>} | '\' {@literal <Unicode character>}
  * </pre>
  * <p>
@@ -38,7 +41,7 @@ public class RegexParser
      */
     public static RegexExp parse(String regexStr)
     {
-        return new RegexParser(regexStr).parseRegex();
+        return new RegexParser(regexStr).parseUnionExp();
     }
 
     /**
@@ -112,20 +115,12 @@ public class RegexParser
      *
      * @return
      */
-    private RegexExp parseRegex()
-    {
-        RegexExp regexExp = parseUnionExp();
-        if (matchChar('|')) {
-            return OrExp.builder().left(regexExp).right(parseUnionExp()).build();
-        }
-        return regexExp;
-    }
-
     private RegexExp parseUnionExp()
+
     {
         RegexExp regexExp = parseConcatExp();
-        if (notEnd() && !peek("|)")) {
-            return ConcatExp.builder().left(regexExp).right(parseUnionExp()).build();
+        if (matchChar('|')) {
+            return OrExp.builder().left(regexExp).right(parseUnionExp()).build();
         }
         return regexExp;
     }
@@ -133,6 +128,15 @@ public class RegexParser
     private RegexExp parseConcatExp()
     {
         RegexExp regexExp = parseRepeatExp();
+        if (notEnd() && !peek("|)")) {
+            return ConcatExp.builder().left(regexExp).right(parseConcatExp()).build();
+        }
+        return regexExp;
+    }
+
+    private RegexExp parseRepeatExp()
+    {
+        RegexExp regexExp = parseAtomExp();
         while (peek("?*+{")) {
             if (matchChar('?'))
                 return RepeatExp.builder().nodeType(NodeType.REGEXP_REPEAT_OPTION).min(0).max(1).inner(regexExp).build();
@@ -170,10 +174,10 @@ public class RegexParser
         return regexExp;
     }
 
-    private RegexExp parseRepeatExp()
+    private RegexExp parseAtomExp()
     {
         if (matchChar('(')) {
-            RegexExp regex = parseRegex();
+            RegexExp regex = parseUnionExp();
             if (matchChar(')')) {
                 return regex;
             }
