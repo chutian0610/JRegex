@@ -20,7 +20,7 @@ public class RegexExpTreeFormatter
 {
     private static final RegexExpTreeFormatter INSTANCE = new RegexExpTreeFormatter();
 
-    public static String print(RegexExp node)
+    public static String format(RegexExp node)
     {
         PrintStackContext context = new PrintStackContext();
         INSTANCE.process(node, Pair.of(context, false));

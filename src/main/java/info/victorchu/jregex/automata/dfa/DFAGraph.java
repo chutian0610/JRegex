@@ -32,6 +32,7 @@ public class DFAGraph
 {
     @NonNull private State start;
     @NonNull private StateManager stateManager;
+    @NonNull private Boolean minimized;
 
     public List<String> toMermaidJsChartLines()
     {
@@ -58,7 +59,7 @@ public class DFAGraph
         trySplitSet(sets, dfaStateSetIndexMap);
         Set<Integer> stateSet = searchDFAIndexMap(this.start.getStateId(), dfaStateSetIndexMap);
         State start = createMinimizationDFAState(stateSet, dfaStateSetIndexMap);
-        return new DFAGraph(start, stateManager);
+        return new DFAGraph(start, stateManager, true);
     }
 
     private State createMinimizationDFAState(Set<Integer> stateSet, Map<Integer, Set<Integer>> dfaStateSetIndexMap)
@@ -217,5 +218,46 @@ public class DFAGraph
             unAccept.addAll(sub.getRight());
         });
         return Pair.of(accept, unAccept);
+    }
+
+    public String printStateMapping()
+    {
+        StringBuilder sb = new StringBuilder();
+        Set<Integer> markSet = new HashSet<>();
+        if (this.getMinimized()) {
+            sb.append("\n<<<<<<<<<<<< Min DFA -> DFA >>>>>>>>>>>>>\n");
+            printDFA2DFAMapping(this.getStart(), sb, markSet);
+        }
+        else {
+            sb.append("\n<<<<<<<<<<<< NFA -> DFA >>>>>>>>>>>>>\n");
+            printDFA2NFAMapping(this.getStart(), sb, markSet);
+        }
+        return sb.toString();
+    }
+
+    private void printDFA2NFAMapping(State cursor, StringBuilder sb, Set<Integer> markSet)
+    {
+        if (cursor != null && !markSet.contains(cursor.getStateId())) {
+            String nfaStr = String.format("(%s)", stateManager.getDFAMappedNFAState(cursor).stream().map(x -> "s_" + x.getStateId()).collect(Collectors.joining(",")));
+            sb.append("s_").append(cursor.getStateId()).append("<==>").append(nfaStr).append("\n");
+            markSet.add(cursor.getStateId());
+            Set<Transition> transitions = cursor.getTransitions();
+            for (Transition transition : transitions) {
+                printDFA2NFAMapping(transition.getState(), sb, markSet);
+            }
+        }
+    }
+
+    private void printDFA2DFAMapping(State cursor, StringBuilder sb, Set<Integer> markSet)
+    {
+        if (cursor != null && !markSet.contains(cursor.getStateId())) {
+            String nfaStr = String.format("(%s)", stateManager.getMinDFAMappedDFAState(cursor).stream().map(x -> "s_" + x.getStateId()).collect(Collectors.joining(",")));
+            sb.append("s_").append(cursor.getStateId()).append("<==>").append(nfaStr).append("\n");
+            markSet.add(cursor.getStateId());
+            Set<Transition> transitions = cursor.getTransitions();
+            for (Transition transition : transitions) {
+                printDFA2DFAMapping(transition.getState(), sb, markSet);
+            }
+        }
     }
 }

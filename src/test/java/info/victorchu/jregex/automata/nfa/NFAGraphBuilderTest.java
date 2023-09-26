@@ -32,7 +32,7 @@ class NFAGraphBuilderTest {
     @Test
     void buildNFA01() throws IOException {
         RegexExp regexExpression = RegexParser.parse("ab");
-        String tree = RegexExpTreeFormatter.print(regexExpression);
+        String tree = RegexExpTreeFormatter.format(regexExpression);
         log.debug("\n================== tree ================\n{}=====================================", tree);
         NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext.getStateManager());
         List<String> chart = nfaGraph.toMermaidJsChartLines();
@@ -49,7 +49,7 @@ class NFAGraphBuilderTest {
     void buildNFA02()
     {
         RegexExp regexExpression = RegexParser.parse("a|b");
-        String tree = RegexExpTreeFormatter.print(regexExpression);
+        String tree = RegexExpTreeFormatter.format(regexExpression);
         log.debug("\n================== tree ================\n{}=====================================", tree);
         NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext.getStateManager());
         List<String> chart = nfaGraph.toMermaidJsChartLines();
@@ -69,7 +69,7 @@ class NFAGraphBuilderTest {
     void buildNFA03()
     {
         RegexExp regexExpression = RegexParser.parse("a*b");
-        String tree = RegexExpTreeFormatter.print(regexExpression);
+        String tree = RegexExpTreeFormatter.format(regexExpression);
         log.debug("\n================== tree ================\n{}=====================================", tree);
         NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext.getStateManager());
         List<String> chart = nfaGraph.toMermaidJsChartLines();
@@ -89,7 +89,7 @@ class NFAGraphBuilderTest {
     @Test
     void buildNFA04() throws IOException {
         RegexExp regexExpression = RegexParser.parse("(a|b)*abb");
-        String tree = RegexExpTreeFormatter.print(regexExpression);
+        String tree = RegexExpTreeFormatter.format(regexExpression);
         log.debug("\n================== tree ================\n{}=====================================", tree);
         NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext.getStateManager());
         List<String> chart = nfaGraph.toMermaidJsChartLines();
@@ -118,7 +118,7 @@ class NFAGraphBuilderTest {
     void buildNFA05()
     {
         RegexExp regexExpression = RegexParser.parse("a+b");
-        String tree = RegexExpTreeFormatter.print(regexExpression);
+        String tree = RegexExpTreeFormatter.format(regexExpression);
         log.debug("\n================== tree ================\n{}=====================================", tree);
         NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext.getStateManager());
         List<String> chart = nfaGraph.toMermaidJsChartLines();
@@ -131,7 +131,7 @@ class NFAGraphBuilderTest {
     void buildNFA06()
     {
         RegexExp regexExpression = RegexParser.parse("a?b");
-        String tree = RegexExpTreeFormatter.print(regexExpression);
+        String tree = RegexExpTreeFormatter.format(regexExpression);
         log.debug("\n================== tree ================\n{}=====================================", tree);
         NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext.getStateManager());
         List<String> chart = nfaGraph.toMermaidJsChartLines();
@@ -144,7 +144,7 @@ class NFAGraphBuilderTest {
     void buildNFA07()
     {
         RegexExp regexExpression = RegexParser.parse("a{1,2}b");
-        String tree = RegexExpTreeFormatter.print(regexExpression);
+        String tree = RegexExpTreeFormatter.format(regexExpression);
         log.debug("\n================== tree ================\n{}=====================================", tree);
         NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext.getStateManager());
         List<String> chart = nfaGraph.toMermaidJsChartLines();
@@ -157,7 +157,7 @@ class NFAGraphBuilderTest {
     void buildNFA08()
     {
         RegexExp regexExpression = RegexParser.parse("a{2}b");
-        String tree = RegexExpTreeFormatter.print(regexExpression);
+        String tree = RegexExpTreeFormatter.format(regexExpression);
         log.debug("\n================== tree ================\n{}=====================================", tree);
         NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext.getStateManager());
         List<String> chart = nfaGraph.toMermaidJsChartLines();
@@ -170,7 +170,7 @@ class NFAGraphBuilderTest {
     void buildNFA09()
     {
         RegexExp regexExpression = RegexParser.parse("a{2,}b");
-        String tree = RegexExpTreeFormatter.print(regexExpression);
+        String tree = RegexExpTreeFormatter.format(regexExpression);
         log.debug("\n================== tree ================\n{}=====================================", tree);
         NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext.getStateManager());
         List<String> chart = nfaGraph.toMermaidJsChartLines();
@@ -183,7 +183,7 @@ class NFAGraphBuilderTest {
     void buildNFA10()
     {
         RegexExp regexExpression = RegexParser.parse("a{0,2}b");
-        String tree = RegexExpTreeFormatter.print(regexExpression);
+        String tree = RegexExpTreeFormatter.format(regexExpression);
         log.debug("\n================== tree ================\n{}=====================================", tree);
         NFAGraph nfaGraph = NFAGraphBuilder.INSTANCE.apply(regexExpression, regexContext.getStateManager());
         List<String> chart = nfaGraph.toMermaidJsChartLines();

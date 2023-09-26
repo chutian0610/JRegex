@@ -39,7 +39,7 @@ class NFAGraphTest
         log.debug("\n================== NFA ================\n{}======================================", nfa.toMermaidJsChart());
         DFAGraph dfa = nfa.toDFA();
         log.debug("\n================== DFA ================\n{}======================================", dfa.toMermaidJsChart());
-        log.debug(regexContext.printDFA2NFAMapping(dfa));
+        log.debug(dfa.printStateMapping());
         List<String> chart = dfa.toMermaidJsChartLines();
         assertThat(
                 Lists.newArrayList("flowchart LR",
@@ -56,7 +56,7 @@ class NFAGraphTest
         log.debug("\n================== NFA ================\n{}======================================", nfa.toMermaidJsChart());
         DFAGraph dfa = nfa.toDFA();
         log.debug("\n================== DFA ================\n{}======================================", dfa.toMermaidJsChart());
-        log.debug(regexContext.printDFA2NFAMapping(dfa));
+        log.debug(dfa.printStateMapping());
         List<String> chart = dfa.toMermaidJsChartLines();
         assertThat(
                 Lists.newArrayList("flowchart LR",
@@ -73,7 +73,7 @@ class NFAGraphTest
         log.debug("\n================== NFA ================\n{}======================================", nfa.toMermaidJsChart());
         DFAGraph dfa = nfa.toDFA();
         log.debug("\n================== DFA ================\n{}======================================", dfa.toMermaidJsChart());
-        log.debug(regexContext.printDFA2NFAMapping(dfa));
+        log.debug(dfa.printStateMapping());
         List<String> chart = dfa.toMermaidJsChartLines();
         assertThat(
                 Lists.newArrayList("flowchart LR",
@@ -92,7 +92,7 @@ class NFAGraphTest
         log.debug("\n================== NFA ================\n{}======================================", nfa.toMermaidJsChart());
         DFAGraph dfa = nfa.toDFA();
         log.debug("\n================== DFA ================\n{}======================================", dfa.toMermaidJsChart());
-        log.debug(regexContext.printDFA2NFAMapping(dfa));
+        log.debug(dfa.printStateMapping());
         List<String> chart = dfa.toMermaidJsChartLines();
         assertThat(
                 Lists.newArrayList("flowchart LR",

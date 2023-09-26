@@ -7,6 +7,7 @@ import info.victorchu.jregex.automata.State;
 import info.victorchu.jregex.automata.StateManager;
 import info.victorchu.jregex.automata.dfa.DFAGraph;
 import info.victorchu.jregex.automata.edge.EpsilonEdge;
+import info.victorchu.jregex.automata.state.GenericStateManager;
 import info.victorchu.jregex.util.AutoMateMermaidJSFormatter;
 import info.victorchu.jregex.util.MermaidJsChartGenerator;
 import info.victorchu.jregex.automata.Transition;
@@ -46,6 +47,12 @@ public class NFAGraph
         return AutoMateMermaidJSFormatter.INSTANCE.convertNFA2FlowChart(this);
     }
 
+    public static NFAGraph build(RegexExp regexExp)
+    {
+        StateManager stateManager = new GenericStateManager();
+        return NFAGraphBuilder.INSTANCE.apply(regexExp, stateManager);
+    }
+
     public static NFAGraph build(RegexExp regexExp, StateManager stateManager)
     {
         return NFAGraphBuilder.INSTANCE.apply(regexExp, stateManager);
@@ -63,7 +70,7 @@ public class NFAGraph
         // 基于NFA 状态集构建 DFA
         State state = createDFAState(startSet);
         // 构建DFA Graph
-        return DFAGraph.of(state, stateManager);
+        return DFAGraph.of(state, stateManager, false);
     }
 
     public boolean isNFASetAccept(Set<Integer> nfaStates){

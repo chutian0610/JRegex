@@ -38,7 +38,7 @@ public class DFAGraphTest
         DFAGraph dfa = nfa.toDFA();
         DFAGraph minDfa = dfa.simplify();
         log.debug("\n==================  mini DFA ================\n{}======================================", minDfa.toMermaidJsChart());
-        log.debug(regexContext.printDFA2DFAMapping(minDfa));
+        log.debug(minDfa.printStateMapping());
         List<String> chart = minDfa.toMermaidJsChartLines();
         assertThat(
                 Lists.newArrayList("flowchart LR",
@@ -55,7 +55,7 @@ public class DFAGraphTest
         DFAGraph dfa = nfa.toDFA();
         DFAGraph minDfa = dfa.simplify();
         log.debug("\n==================  mini DFA ================\n{}======================================", minDfa.toMermaidJsChart());
-        log.debug(regexContext.printDFA2DFAMapping(minDfa));
+        log.debug(minDfa.printStateMapping());
         List<String> chart = minDfa.toMermaidJsChartLines();
         assertThat(
                 Lists.newArrayList("flowchart LR",
@@ -72,7 +72,7 @@ public class DFAGraphTest
         DFAGraph dfa = nfa.toDFA();
         DFAGraph minDfa = dfa.simplify();
         log.debug("\n==================  mini DFA ================\n{}======================================", minDfa.toMermaidJsChart());
-        log.debug(regexContext.printDFA2DFAMapping(minDfa));
+        log.debug(minDfa.printStateMapping());
         List<String> chart = minDfa.toMermaidJsChartLines();
         assertThat(
                 Lists.newArrayList("flowchart LR",
@@ -89,7 +89,7 @@ public class DFAGraphTest
         DFAGraph dfa = nfa.toDFA();
         DFAGraph minDfa = dfa.simplify();
         log.debug("\n==================  mini DFA ================\n{}======================================", minDfa.toMermaidJsChart());
-        log.debug(regexContext.printDFA2DFAMapping(minDfa));
+        log.debug(minDfa.printStateMapping());
         List<String> chart = minDfa.toMermaidJsChartLines();
         assertThat(
                 Lists.newArrayList("flowchart LR",

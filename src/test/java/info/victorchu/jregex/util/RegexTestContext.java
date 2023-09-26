@@ -39,47 +39,4 @@ public class RegexTestContext
     public static String chart2ExpectString(List<String> chart){
         return "\"" + String.join("\",\n\"", chart) + "\"";
     }
-    public String printDFA2DFAMapping(DFAGraph dfaGraph)
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\n<<<<<<<<<<<< Min DFA -> DFA >>>>>>>>>>>>>\n");
-        Set<Integer> markSet = new HashSet<>();
-        printDFA2DFAMapping(dfaGraph.getStart(), sb, markSet);
-        return sb.toString();
-    }
-
-    private void printDFA2DFAMapping(State cursor, StringBuilder sb, Set<Integer> markSet)
-    {
-        if (cursor != null && !markSet.contains(cursor.getStateId())) {
-            String nfaStr = String.format("(%s)", stateManager.getMinDFAMappedDFAState(cursor).stream().map(x -> "s_" + x.getStateId()).collect(Collectors.joining(",")));
-            sb.append("s_").append(cursor.getStateId()).append("<==>").append(nfaStr).append("\n");
-            markSet.add(cursor.getStateId());
-            Set<Transition> transitions = cursor.getTransitions();
-            for (Transition transition : transitions) {
-                printDFA2DFAMapping(transition.getState(), sb, markSet);
-            }
-        }
-    }
-
-    public String printDFA2NFAMapping(DFAGraph dfaGraph)
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\n<<<<<<<<<<<< NFA -> DFA >>>>>>>>>>>>>\n");
-        Set<Integer> markSet = new HashSet<>();
-        printDFA2NFAMapping(dfaGraph.getStart(), sb, markSet);
-        return sb.toString();
-    }
-
-    private void printDFA2NFAMapping(State cursor, StringBuilder sb, Set<Integer> markSet)
-    {
-        if (cursor != null && !markSet.contains(cursor.getStateId())) {
-            String nfaStr = String.format("(%s)", stateManager.getDFAMappedNFAState(cursor).stream().map(x -> "s_" + x.getStateId()).collect(Collectors.joining(",")));
-            sb.append("s_").append(cursor.getStateId()).append("<==>").append(nfaStr).append("\n");
-            markSet.add(cursor.getStateId());
-            Set<Transition> transitions = cursor.getTransitions();
-            for (Transition transition : transitions) {
-                printDFA2NFAMapping(transition.getState(), sb, markSet);
-            }
-        }
-    }
 }

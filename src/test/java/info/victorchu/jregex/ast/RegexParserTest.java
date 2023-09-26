@@ -15,7 +15,7 @@ class RegexParserTest {
     void parse01()
             throws IOException {
         RegexExp regexExp = RegexParser.parse("ab*c|bc");
-        String tree = RegexExpTreeFormatter.print(regexExp);
+        String tree = RegexExpTreeFormatter.format(regexExp);
         log.debug("\n================== tree ================\n{}======================================", tree);
         Assertions.assertEquals("[Or]\n" +
                 "├──[Concat]\n" +
@@ -33,7 +33,7 @@ class RegexParserTest {
     void parse02()
             throws IOException {
         RegexExp regexExp = RegexParser.parse("(A|a)b*c|bc");
-        String tree = RegexExpTreeFormatter.print(regexExp);
+        String tree = RegexExpTreeFormatter.format(regexExp);
         log.debug("\n================== tree ================\n{}======================================", tree);
         Assertions.assertEquals("[Or]\n" +
                 "├──[Concat]\n" +
