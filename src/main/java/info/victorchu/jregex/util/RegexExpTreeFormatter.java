@@ -1,6 +1,8 @@
 package info.victorchu.jregex.util;
 
+import info.victorchu.jregex.ast.CharClassExp;
 import info.victorchu.jregex.ast.CharExp;
+import info.victorchu.jregex.ast.CharRangeExp;
 import info.victorchu.jregex.ast.ConcatExp;
 import info.victorchu.jregex.ast.OrExp;
 import info.victorchu.jregex.ast.RegexExp;
@@ -34,6 +36,31 @@ public class RegexExpTreeFormatter
         context.getLeft().peek().ifPresent(x -> context.getLeft().append(x));
         context.getLeft().pop();
 
+        return null;
+    }
+
+    @Override
+    public Object visitCharRange(CharRangeExp node, Pair<PrintStackContext, Boolean> context)
+    {
+        context.getLeft().push(node, context.getRight());
+        context.getLeft().peek().ifPresent(x -> context.getLeft().append(x));
+        context.getLeft().pop();
+        return null;
+    }
+
+    @Override
+    public Object visitCharClass(CharClassExp node, Pair<PrintStackContext, Boolean> context)
+    {
+        context.getLeft().push(node, context.getRight());
+        context.getLeft().peek().ifPresent(x -> context.getLeft().append(x));
+        for (int i = 0; i < node.getRegexCharExpList().size(); i++) {
+            if(i==node.getRegexCharExpList().size()-1){
+                process(node.getRegexCharExpList().get(i), Pair.of(context.getLeft(), true));
+            }else {
+                process(node.getRegexCharExpList().get(i), Pair.of(context.getLeft(), false));
+            }
+        }
+        context.getLeft().pop();
         return null;
     }
 
@@ -199,6 +226,18 @@ public class RegexExpTreeFormatter
         public String visitChar(CharExp node, Void context)
         {
             return String.format("[Char:%s]",node.getCharacter());
+        }
+
+        @Override
+        public String visitCharRange(CharRangeExp node, Void context)
+        {
+            return String.format("[CharRange:%s-%s]",node.getFrom(),node.getTo());
+        }
+
+        @Override
+        public String visitCharClass(CharClassExp node, Void context)
+        {
+            return String.format("[CharClass: negative=%s]",node.getNegative());
         }
 
         @Override

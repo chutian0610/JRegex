@@ -1,7 +1,10 @@
 package info.victorchu.jregex.util;
 
+import info.victorchu.jregex.automata.Edge;
 import info.victorchu.jregex.automata.Transition;
 import info.victorchu.jregex.automata.dfa.DFAGraph;
+import info.victorchu.jregex.automata.edge.CharacterEdge;
+import info.victorchu.jregex.automata.edge.EpsilonEdge;
 import info.victorchu.jregex.automata.nfa.NFAGraph;
 import info.victorchu.jregex.automata.State;
 import lombok.NonNull;
@@ -100,7 +103,19 @@ public class AutoMateMermaidJSFormatter
 
     protected String convertState2Line(@NonNull State state, @NonNull Transition transition)
     {
-        return convertState2Node(state) + "-->|" + transition.getEdge() + "|" + convertState2Node(transition.getState()) + "";
+        return convertState2Node(state) + "-->|" + convertEdge2Str(transition.getEdge()) + "|" + convertState2Node(transition.getState()) + "";
+    }
+
+    protected String convertEdge2Str(Edge edge){
+        if(edge instanceof EpsilonEdge){
+            return edge.toString();
+        }
+        if(edge instanceof CharacterEdge){
+            CharacterEdge characterEdge= (CharacterEdge) edge;
+            // html format
+            return String.format("\"#%04d;\"",(int)characterEdge.getCharacter());
+        }
+        return edge.toString();
     }
 
     protected String convertState2Node(@NonNull State state)

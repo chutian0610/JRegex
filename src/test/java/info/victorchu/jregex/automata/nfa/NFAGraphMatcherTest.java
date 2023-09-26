@@ -247,4 +247,21 @@ class NFAGraphMatcherTest
         NFAGraphMatcher nfaGraphMatcher = new NFAGraphMatcher(nfa);
         Assertions.assertFalse(nfaGraphMatcher.matches("ababababababaabbb"));
     }
+
+    @Test
+    void matchesCharClass01()
+    {
+        RegexExp regexExpression = RegexParser.parse("[a-cA-]{1,3}b");
+        NFAGraph nfa = NFAGraph.build(regexExpression, regexContext.getStateManager());
+        NFAGraphMatcher nfaGraphMatcher = new NFAGraphMatcher(nfa);
+        Assertions.assertTrue(nfaGraphMatcher.matches("A-b"));
+    }
+    @Test
+    void matchesCharClass02()
+    {
+        RegexExp regexExpression = RegexParser.parse("[^a-cA-]{1,3}b");
+        NFAGraph nfa = NFAGraph.build(regexExpression, regexContext.getStateManager());
+        NFAGraphMatcher nfaGraphMatcher = new NFAGraphMatcher(nfa);
+        Assertions.assertTrue(nfaGraphMatcher.matches("dddb"));
+    }
 }

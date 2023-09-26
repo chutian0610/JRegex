@@ -13,11 +13,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CharExp
-        extends RegexExp
+        extends RegexCharExp
 {
     public CharExp(Character character)
     {
-        super(NodeType.REGEXP_CHAR);
+        super(NodeType.REGEX_CHAR);
         this.character = character;
     }
 

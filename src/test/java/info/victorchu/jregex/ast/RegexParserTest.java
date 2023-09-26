@@ -48,4 +48,18 @@ class RegexParserTest {
                 "   ├──[Char:b]\n" +
                 "   └──[Char:c]\n", tree);
     }
+    @Test
+    void parse03()
+            throws IOException {
+        RegexExp regexExp = RegexParser.parse("[a-zA-]+b");
+        String tree = RegexExpTreeFormatter.format(regexExp);
+        log.debug("\n================== tree ================\n{}======================================", tree);
+        Assertions.assertEquals("[Concat]\n" +
+                "├──[Repeat:+]\n" +
+                "│  └──[CharClass: negative=false]\n" +
+                "│     ├──[CharRange:a-z]\n" +
+                "│     ├──[Char:A]\n" +
+                "│     └──[Char:-]\n" +
+                "└──[Char:b]\n", tree);
+    }
 }

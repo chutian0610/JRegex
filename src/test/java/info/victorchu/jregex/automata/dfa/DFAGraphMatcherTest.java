@@ -171,4 +171,14 @@ class DFAGraphMatcherTest
         DFAGraphMatcher dfaGraphMatcher = new DFAGraphMatcher(minDfa);
         Assertions.assertFalse(dfaGraphMatcher.matches("ababababababaabbb"));
     }
+    @Test
+    void matchesCharClass01()
+    {
+        RegexExp regexExpression = RegexParser.parse("[a-cA-]{1,3}b");
+        NFAGraph nfa = NFAGraph.build(regexExpression, regexContext.getStateManager());
+        DFAGraph dfa = nfa.toDFA();
+        DFAGraph minDfa = dfa.simplify();
+        DFAGraphMatcher dfaGraphMatcher = new DFAGraphMatcher(minDfa);
+        Assertions.assertTrue(dfaGraphMatcher.matches("A-b"));
+    }
 }

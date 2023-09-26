@@ -16,23 +16,30 @@ public enum NodeType
     /**
      * s*
      */
-    REGEXP_REPEAT_MANY,
+    REGEX_REPEAT_MANY,
     /**
      * s+
      */
-    REGEXP_REPEAT_PLUS,
+    REGEX_REPEAT_PLUS,
     /**
      * s?
      */
-    REGEXP_REPEAT_OPTION,
+    REGEX_REPEAT_OPTION,
     /**
      * s{n,m}
      * s{n,}
      */
-    REGEXP_REPEAT_RANGE,
+    REGEX_REPEAT_RANGE,
+
+    REGEX_CHAR_CLASS,
 
     /**
      * 字符
      */
-    REGEXP_CHAR
+    REGEX_CHAR,
+
+    /**
+     * 字符范围
+     */
+    REGEX_CHAR_RANGE
 }

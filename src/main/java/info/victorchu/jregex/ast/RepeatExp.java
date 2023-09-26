@@ -29,13 +29,13 @@ public class RepeatExp
     public String repeatStr(){
 
         switch (nodeType) {
-            case REGEXP_REPEAT_MANY:
+            case REGEX_REPEAT_MANY:
                 return "*";
-            case REGEXP_REPEAT_PLUS:
+            case REGEX_REPEAT_PLUS:
                 return "+";
-            case REGEXP_REPEAT_OPTION:
+            case REGEX_REPEAT_OPTION:
                 return "?";
-            case REGEXP_REPEAT_RANGE:
+            case REGEX_REPEAT_RANGE:
             default:
                 if (max == null) {
                     return String.format("{%d,}", min);

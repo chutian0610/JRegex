@@ -1,5 +1,9 @@
 package info.victorchu.jregex.ast;
 
+import com.google.common.collect.Lists;
+
+import java.util.List;
+
 /**
  * 简单正则表达式parser.
  *
@@ -15,8 +19,15 @@ package info.victorchu.jregex.ast;
  *              | {@literal <repeatexp>} '{' {@literal <number>} '}'
  *              | {@literal <repeatexp>} '{' {@literal <number>} ',' '}'
  *              | {@literal <repeatexp>} '{' {@literal <number>} ',' {@literal <number>} '}'
- *              | {@literal <atomexp>}
- * {@literal <atomexp>} := {@literal <charexp>}
+ *              | {@literal <charclassesexp>}
+ * {@literal <charclassesexp>} := '[' {@literal <charclasses>} ']'
+ *              | '[' '^' {@literal <charclasses>} ']'
+ *              | {@literal <atomexp}
+ *  {@literal <charclasses>} := {@literal <charclass>} {@literal <charclasses>}
+ *              | {@literal <charclass>}
+ *  {@literal <charclass>} := {@literal <charexp>} '-' {@literal <charexp>}
+ *             | {@literal <charexp>}
+ *  {@literal <atomexp>} := {@literal <charexp>}
  *               | '(' {@literal <unionexp>} ')'
  * {@literal <charexp>} ::= {@literal <Unicode character>} | '\' {@literal <Unicode character>}
  * </pre>
@@ -136,14 +147,14 @@ public class RegexParser
 
     private RegexExp parseRepeatExp()
     {
-        RegexExp regexExp = parseAtomExp();
+        RegexExp regexExp = parseCharClassesExp();
         while (peek("?*+{")) {
             if (matchChar('?'))
-                return RepeatExp.builder().nodeType(NodeType.REGEXP_REPEAT_OPTION).min(0).max(1).inner(regexExp).build();
+                return RepeatExp.builder().nodeType(NodeType.REGEX_REPEAT_OPTION).min(0).max(1).inner(regexExp).build();
             else if (matchChar('*'))
-                return RepeatExp.builder().nodeType(NodeType.REGEXP_REPEAT_MANY).min(0).inner(regexExp).build();
+                return RepeatExp.builder().nodeType(NodeType.REGEX_REPEAT_MANY).min(0).inner(regexExp).build();
             else if (matchChar('+'))
-                return RepeatExp.builder().nodeType(NodeType.REGEXP_REPEAT_PLUS).min(1).inner(regexExp).build();
+                return RepeatExp.builder().nodeType(NodeType.REGEX_REPEAT_PLUS).min(1).inner(regexExp).build();
             else if (matchChar('{')) {
                 int start = position;
                 while (peek("0123456789")) {
@@ -166,12 +177,44 @@ public class RegexParser
                 if (!matchChar('}'))
                     throw new IllegalArgumentException("expected '}' at position " + position);
                 if (m == -1)
-                    return RepeatExp.builder().nodeType(NodeType.REGEXP_REPEAT_RANGE).min(n).inner(regexExp).build();
+                    return RepeatExp.builder().nodeType(NodeType.REGEX_REPEAT_RANGE).min(n).inner(regexExp).build();
                 else
-                    return RepeatExp.builder().nodeType(NodeType.REGEXP_REPEAT_RANGE).min(n).max(m).inner(regexExp).build();
+                    return RepeatExp.builder().nodeType(NodeType.REGEX_REPEAT_RANGE).min(n).max(m).inner(regexExp).build();
             }
         }
         return regexExp;
+    }
+    private RegexExp parseCharClassesExp(){
+        if (matchChar('[')) {
+            boolean negate = matchChar('^');
+            CharClassExp regex = parseCharClasses();
+            regex.setNegative(negate);
+            if (!matchChar(']')) {
+                throw new IllegalArgumentException("expected ']' at position " + position);
+            }
+            return regex;
+        } else {
+            return parseAtomExp();
+        }
+    }
+    private CharClassExp parseCharClasses(){
+        List<RegexCharExp> regexExps = parseCharClass();
+        while (notEnd() && !peek("]")){
+            regexExps.addAll(parseCharClass());
+        }
+        return CharClassExp.builder().regexCharExpList(regexExps).build();
+    }
+    private List<RegexCharExp> parseCharClass(){
+        CharExp c = parseCharExp();
+        if (matchChar('-')) {
+            if (peek("]")){
+                return Lists.newArrayList(c,CharExp.builder().character('-').build());
+            }else {
+                return Lists.newArrayList(CharRangeExp.builder().from(c.getCharacter()).to(parseCharExp().getCharacter()).build());
+            }
+        }else {
+            return Lists.newArrayList(c);
+        }
     }
 
     private RegexExp parseAtomExp()
@@ -190,7 +233,7 @@ public class RegexParser
         }
     }
 
-    private RegexExp parseCharExp()
+    private CharExp parseCharExp()
     {
         matchChar('\\');
         return CharExp.builder().character(next()).build();

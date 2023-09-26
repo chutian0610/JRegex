@@ -2,6 +2,8 @@ package info.victorchu.jregex.automata.edge;
 
 import info.victorchu.jregex.automata.Edge;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * @author victorchu
@@ -10,6 +12,7 @@ import lombok.EqualsAndHashCode;
 public class CharacterEdge
         implements Edge
 {
+    @Getter
     protected Character character;
 
     public CharacterEdge(Character character)
@@ -20,6 +23,6 @@ public class CharacterEdge
     @Override
     public String toString()
     {
-        return String.format("'%s'", character);
+        return String.format("'%s'", StringEscapeUtils.escapeJava(character.toString()));
     }
 }

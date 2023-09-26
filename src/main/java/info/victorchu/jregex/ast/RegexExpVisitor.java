@@ -11,6 +11,8 @@ public interface RegexExpVisitor<T, C>
     // --------------- 基于 RegexNode 具体类型分发 ------------------------
 
     T visitChar(CharExp node, C context);
+    T visitCharRange(CharRangeExp node, C context);
+    T visitCharClass(CharClassExp node, C context);
 
     T visitConcat(ConcatExp node, C context);
 

@@ -6,6 +6,7 @@ import info.victorchu.jregex.ast.RegexExp;
 import info.victorchu.jregex.ast.RegexParser;
 import info.victorchu.jregex.automata.nfa.NFAGraph;
 import info.victorchu.jregex.automata.state.GenericStateManager;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -19,9 +20,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 /**
  * @author victorchu
  */
-public class DFAGraphTest
+
+@Slf4j
+public class DFAGraphSimplifyTest
 {
-    private static final Logger log = LoggerFactory.getLogger(DFAGraphTest.class);
     private static final RegexTestContext regexContext = new RegexTestContext(new GenericStateManager());
 
     @BeforeEach
@@ -41,9 +43,9 @@ public class DFAGraphTest
         log.debug(minDfa.printStateMapping());
         List<String> chart = minDfa.toMermaidJsChartLines();
         assertThat(
-                Lists.newArrayList("flowchart LR",
-                        "s_0(0)-->|'a'|s_1(1)",
-                        "s_1(1)-->|'b'|s_2((2))"),
+                Lists.newArrayList(
+                        "flowchart LR", "s_0(0)-->|\"#0097;\"|s_1(1)", "s_1(1)-->|\"#0098;\"|s_2((2))"
+                ),
                 containsInAnyOrder(chart));
     }
 
@@ -58,9 +60,8 @@ public class DFAGraphTest
         log.debug(minDfa.printStateMapping());
         List<String> chart = minDfa.toMermaidJsChartLines();
         assertThat(
-                Lists.newArrayList("flowchart LR",
-                        "s_0(0)-->|'b'|s_1((1))",
-                        "s_0(0)-->|'a'|s_1((1))"),
+                Lists.newArrayList("flowchart LR", "s_0(0)-->|\"#0098;\"|s_1((1))", "s_0(0)-->|\"#0097;\"|s_1((1))"
+                ),
                 containsInAnyOrder(chart));
     }
 
@@ -75,9 +76,8 @@ public class DFAGraphTest
         log.debug(minDfa.printStateMapping());
         List<String> chart = minDfa.toMermaidJsChartLines();
         assertThat(
-                Lists.newArrayList("flowchart LR",
-                        "s_0(0)-->|'b'|s_2((2))",
-                        "s_0(0)-->|'a'|s_0(0)"),
+                Lists.newArrayList("flowchart LR", "s_0(0)-->|\"#0098;\"|s_2((2))", "s_0(0)-->|\"#0097;\"|s_0(0)"
+                ),
                 containsInAnyOrder(chart));
     }
 
@@ -92,15 +92,8 @@ public class DFAGraphTest
         log.debug(minDfa.printStateMapping());
         List<String> chart = minDfa.toMermaidJsChartLines();
         assertThat(
-                Lists.newArrayList("flowchart LR",
-                        "s_0(0)-->|'b'|s_0(0)",
-                        "s_0(0)-->|'a'|s_1(1)",
-                        "s_1(1)-->|'b'|s_2(2)",
-                        "s_2(2)-->|'b'|s_3((3))",
-                        "s_3((3))-->|'b'|s_0(0)",
-                        "s_3((3))-->|'a'|s_1(1)",
-                        "s_2(2)-->|'a'|s_1(1)",
-                        "s_1(1)-->|'a'|s_1(1)"),
+                Lists.newArrayList("flowchart LR", "s_0(0)-->|\"#0098;\"|s_0(0)", "s_0(0)-->|\"#0097;\"|s_1(1)", "s_1(1)-->|\"#0098;\"|s_2(2)", "s_2(2)-->|\"#0098;\"|s_3((3))", "s_3((3))-->|\"#0098;\"|s_0(0)", "s_3((3))-->|\"#0097;\"|s_1(1)", "s_2(2)-->|\"#0097;\"|s_1(1)", "s_1(1)-->|\"#0097;\"|s_1(1)"
+                ),
                 containsInAnyOrder(chart));
     }
 }

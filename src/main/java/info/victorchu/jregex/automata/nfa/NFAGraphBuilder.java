@@ -1,6 +1,9 @@
 package info.victorchu.jregex.automata.nfa;
 
+import com.google.common.collect.Lists;
+import info.victorchu.jregex.ast.CharClassExp;
 import info.victorchu.jregex.ast.CharExp;
+import info.victorchu.jregex.ast.CharRangeExp;
 import info.victorchu.jregex.ast.ConcatExp;
 import info.victorchu.jregex.ast.NodeType;
 import info.victorchu.jregex.ast.OrExp;
@@ -11,10 +14,14 @@ import info.victorchu.jregex.automata.Edge;
 import info.victorchu.jregex.automata.State;
 import info.victorchu.jregex.automata.StateManager;
 import info.victorchu.jregex.automata.SubGraph;
+import info.victorchu.jregex.util.CharacterUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Thompson algorithm
@@ -32,6 +39,36 @@ public class NFAGraphBuilder
         State charState = context.createNFAState();
         start.addTransition(Edge.character(node.getCharacter()), charState);
         return SubGraph.of(Edge.epsilon(), start, charState);
+    }
+
+    @Override
+    public SubGraph visitCharRange(CharRangeExp node, StateManager context)
+    {
+        // 这个节点不会进来，在CharClassExp中会被处理掉
+        return null;
+    }
+    @Override
+    public SubGraph visitCharClass(CharClassExp node, StateManager context)
+    {
+        Set<Character> characterSet =node.getRegexCharExpList().stream().flatMap(x->{
+            if(x instanceof CharExp){
+                return Stream.of(((CharExp) x).getCharacter());
+            }else if(x instanceof CharRangeExp) {
+                return CharacterUtil.getCharacterRange(((CharRangeExp) x).getFrom(),((CharRangeExp) x).getTo()).stream();
+            }
+            return Stream.empty();
+        }).collect(Collectors.toSet());
+        List<Character> characters = node.getNegative()? CharacterUtil.getComplementaryAscii(characterSet): Lists.newArrayList(characterSet);
+        State start = context.createNFAState();
+        for (Character c: characters) {
+            State charState = context.createNFAState();
+            start.addTransition(Edge.character(c), charState);
+        }
+        State end = context.createNFAState();
+        start.getTransitions().forEach(x->{
+            x.getState().addTransition(Edge.epsilon(),end);
+        });
+        return SubGraph.of(Edge.epsilon(), start, end);
     }
 
     @Override
