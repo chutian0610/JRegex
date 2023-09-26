@@ -6,9 +6,9 @@ Regex Engine written by Java.
 
 * 将正则表达式解析为语法树
 
-```java
+```
 RegexExp regexExp=RegexParser.parse("(a|b)*abb");
-        log.info(RegexExpTreeFormatter.format(regexExp));
+log.info(RegexExpTreeFormatter.format(regexExp));
 ```
 
 ```
@@ -26,9 +26,9 @@ RegexExp regexExp=RegexParser.parse("(a|b)*abb");
 
 * 使用Thompson构造法从语法树构建NFA
 
-```java
+```
 NFAGraph nfaGraph=NFAGraph.build(regexExp);
-        log.info(nfaGraph.toMermaidJsChart());
+log.info(nfaGraph.toMermaidJsChart());
 ```
 
 打印Mermaid流程图
@@ -55,11 +55,11 @@ flowchart LR
 
 * 使用子集构造法从NFA构造DFA
 
-```java
+```
 DFAGraph dfa=nfa.toDFA();
-        log.info(dfa.toMermaidJsChart());
+log.info(dfa.toMermaidJsChart());
 // 状态映射
-        log.info(dfa.printStateMapping());
+log.info(dfa.printStateMapping());
 ```
 
 DFA流程图
@@ -91,11 +91,11 @@ s_3<==>(s_5,s_6,s_7,s_8,s_13,s_1,s_2,s_4)
 
 * DFA化简
 
-```java
+```
 DFAGraph minDfa=dfa.simplify();
-        log.info(minDfa.toMermaidJsChart());
+log.info(minDfa.toMermaidJsChart());
 // 状态映射
-        log.info(minDfa.printStateMapping());
+log.info(minDfa.printStateMapping());
 ```
 
 min DFA状态
@@ -123,28 +123,26 @@ s_3<==>(s_3)
 
 * NFA 模拟执行
 
-```java
-void matches()
-        {
-        RegexExp regexExpression=RegexParser.parse("(a|b)*abb");
-        NFAGraph nfa=NFAGraph.build(regexExpression);
-        NFAGraphMatcher nfaGraphMatcher=new NFAGraphMatcher(nfa);
-        Assertions.assertTrue(nfaGraphMatcher.matches("aaaaaaaaaaaaaaaaaaaaaabb"));
-        }
+```
+void matches(){
+    RegexExp regexExpression=RegexParser.parse("(a|b)*abb");
+    NFAGraph nfa=NFAGraph.build(regexExpression);
+    NFAGraphMatcher nfaGraphMatcher=new NFAGraphMatcher(nfa);
+    Assertions.assertTrue(nfaGraphMatcher.matches("aaaaaaaaaaaaaaaaaaaaaabb"));
+}
 ```
 
 * DFA 模拟执行
 
-```java
-void matches()
-        {
-        RegexExp regexExpression=RegexParser.parse("(a|b)*abb");
-        NFAGraph nfa=NFAGraph.build(regexExpression);
-        DFAGraph dfa=nfa.toDFA();
-        DFAGraph minDfa=dfa.simplify();
-        DFAGraphMatcher dfaGraphMatcher=new DFAGraphMatcher(minDfa);
-        Assertions.assertTrue(dfaGraphMatcher.matches("aaaaaaaaaaaaaaaaaaaaaabb"));
-        }
+```
+void matches(){
+    RegexExp regexExpression=RegexParser.parse("(a|b)*abb");
+    NFAGraph nfa=NFAGraph.build(regexExpression);
+    DFAGraph dfa=nfa.toDFA();
+    DFAGraph minDfa=dfa.simplify();
+    DFAGraphMatcher dfaGraphMatcher=new DFAGraphMatcher(minDfa);
+    Assertions.assertTrue(dfaGraphMatcher.matches("aaaaaaaaaaaaaaaaaaaaaabb"));
+}
 ```
 
 ## 支持的语法
