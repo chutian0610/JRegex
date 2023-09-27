@@ -3,12 +3,13 @@ package info.victorchu.jregex.automata.nfa;
 import com.google.common.collect.Sets;
 import info.victorchu.jregex.ast.RegexExp;
 import info.victorchu.jregex.automata.Edge;
+import info.victorchu.jregex.automata.Graph;
 import info.victorchu.jregex.automata.State;
 import info.victorchu.jregex.automata.StateManager;
 import info.victorchu.jregex.automata.dfa.DFAGraph;
 import info.victorchu.jregex.automata.edge.EpsilonEdge;
 import info.victorchu.jregex.automata.state.GenericStateManager;
-import info.victorchu.jregex.util.AutoMateMermaidJSFormatter;
+import info.victorchu.jregex.util.GraphMermaidJSFormatter;
 import info.victorchu.jregex.util.MermaidJsChartGenerator;
 import info.victorchu.jregex.automata.Transition;
 import lombok.Getter;
@@ -30,22 +31,12 @@ import java.util.stream.Collectors;
 @Getter
 @RequiredArgsConstructor(staticName = "of")
 public class NFAGraph
-        implements MermaidJsChartGenerator
+        implements Graph
 {
     @NonNull
     private State start;
     @NonNull
     private StateManager stateManager;
-
-    public List<String> toMermaidJsChartLines()
-    {
-        return AutoMateMermaidJSFormatter.INSTANCE.convertNFA2FlowChartLines(this);
-    }
-
-    public String toMermaidJsChart()
-    {
-        return AutoMateMermaidJSFormatter.INSTANCE.convertNFA2FlowChart(this);
-    }
 
     public static NFAGraph build(RegexExp regexExp)
     {

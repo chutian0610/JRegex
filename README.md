@@ -2,6 +2,12 @@
 
 Regex Engine written by Java.
 
+## build
+
+```shell
+mvn clean package -Dorg.slf4j.simpleLogger.defaultLogLevel=info
+```
+
 ## Feature
 
 * 将正则表达式解析为语法树

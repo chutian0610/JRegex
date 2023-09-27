@@ -8,6 +8,4 @@ import java.util.List;
 public interface MermaidJsChartGenerator
 {
     List<String> toMermaidJsChartLines();
-
-    String toMermaidJsChart();
 }

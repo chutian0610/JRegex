@@ -2,9 +2,10 @@ package info.victorchu.jregex.automata.dfa;
 
 import com.google.common.collect.Sets;
 import info.victorchu.jregex.automata.Edge;
+import info.victorchu.jregex.automata.Graph;
 import info.victorchu.jregex.automata.State;
 import info.victorchu.jregex.automata.StateManager;
-import info.victorchu.jregex.util.AutoMateMermaidJSFormatter;
+import info.victorchu.jregex.util.GraphMermaidJSFormatter;
 import info.victorchu.jregex.util.MermaidJsChartGenerator;
 import info.victorchu.jregex.util.Pair;
 import info.victorchu.jregex.automata.Transition;
@@ -28,21 +29,11 @@ import java.util.stream.Stream;
 @Getter
 @RequiredArgsConstructor(staticName = "of")
 public class DFAGraph
-        implements MermaidJsChartGenerator
+        implements Graph
 {
     @NonNull private State start;
     @NonNull private StateManager stateManager;
     @NonNull private Boolean minimized;
-
-    public List<String> toMermaidJsChartLines()
-    {
-        return AutoMateMermaidJSFormatter.INSTANCE.convertDFA2FlowChartLines(this);
-    }
-
-    public String toMermaidJsChart()
-    {
-        return AutoMateMermaidJSFormatter.INSTANCE.convertDFA2FlowChart(this);
-    }
 
     /**
      * DFA 化简 (Hopcroft)算法
