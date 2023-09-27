@@ -5,7 +5,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
- * subGraph
+ * subGraph.
+ * NFA 构建的中间结果
  * <pre>
  *  -- inEdge-->start  ... ... ->end)
  * </pre>

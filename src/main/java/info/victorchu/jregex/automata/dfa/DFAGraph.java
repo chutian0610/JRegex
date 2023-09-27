@@ -45,7 +45,7 @@ public class DFAGraph
     }
 
     /**
-     * DFA 化简
+     * DFA 化简 (Hopcroft)算法
      *
      * @return
      */
