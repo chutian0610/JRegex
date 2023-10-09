@@ -1,7 +1,7 @@
 package info.victorchu.jregex.automata;
 
-import info.victorchu.jregex.util.GraphMermaidJSFormatter;
-import info.victorchu.jregex.util.MermaidJsChartGenerator;
+import info.victorchu.jregex.misc.GraphMermaidJSFormatter;
+import info.victorchu.jregex.misc.MermaidJsChartGenerator;
 
 import java.util.ArrayList;
 import java.util.HashSet;

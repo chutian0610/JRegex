@@ -5,7 +5,6 @@ import info.victorchu.jregex.ast.CharClassExp;
 import info.victorchu.jregex.ast.CharExp;
 import info.victorchu.jregex.ast.CharRangeExp;
 import info.victorchu.jregex.ast.ConcatExp;
-import info.victorchu.jregex.ast.NodeType;
 import info.victorchu.jregex.ast.OrExp;
 import info.victorchu.jregex.ast.RegexExp;
 import info.victorchu.jregex.ast.RegexExpVisitor;
@@ -14,7 +13,7 @@ import info.victorchu.jregex.automata.Edge;
 import info.victorchu.jregex.automata.State;
 import info.victorchu.jregex.automata.StateManager;
 import info.victorchu.jregex.automata.SubGraph;
-import info.victorchu.jregex.util.CharacterUtil;
+import info.victorchu.jregex.misc.CharacterUtil;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,16 +3,13 @@ package info.victorchu.jregex.automata.dfa;
 import info.victorchu.jregex.ast.RegexExp;
 import info.victorchu.jregex.ast.RegexParser;
 import info.victorchu.jregex.automata.nfa.NFAGraph;
-import info.victorchu.jregex.automata.nfa.NFAGraphMatcher;
 import info.victorchu.jregex.automata.state.GenericStateManager;
-import info.victorchu.jregex.util.RegexTestContext;
+import info.victorchu.jregex.misc.RegexTestContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author victorchu

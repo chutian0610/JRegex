@@ -9,8 +9,6 @@ import info.victorchu.jregex.automata.StateManager;
 import info.victorchu.jregex.automata.dfa.DFAGraph;
 import info.victorchu.jregex.automata.edge.EpsilonEdge;
 import info.victorchu.jregex.automata.state.GenericStateManager;
-import info.victorchu.jregex.util.GraphMermaidJSFormatter;
-import info.victorchu.jregex.util.MermaidJsChartGenerator;
 import info.victorchu.jregex.automata.Transition;
 import lombok.Getter;
 import lombok.NonNull;
@@ -18,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;

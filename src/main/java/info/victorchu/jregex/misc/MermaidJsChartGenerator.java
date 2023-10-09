@@ -1,4 +1,4 @@
-package info.victorchu.jregex.util;
+package info.victorchu.jregex.misc;
 
 import java.util.List;
 

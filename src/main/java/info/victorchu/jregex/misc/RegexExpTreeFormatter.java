@@ -1,4 +1,4 @@
-package info.victorchu.jregex.util;
+package info.victorchu.jregex.misc;
 
 import info.victorchu.jregex.ast.CharClassExp;
 import info.victorchu.jregex.ast.CharExp;

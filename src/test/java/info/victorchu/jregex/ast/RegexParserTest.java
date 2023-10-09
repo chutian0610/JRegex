@@ -1,6 +1,6 @@
 package info.victorchu.jregex.ast;
 
-import info.victorchu.jregex.util.RegexExpTreeFormatter;
+import info.victorchu.jregex.misc.RegexExpTreeFormatter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;

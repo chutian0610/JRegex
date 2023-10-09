@@ -7,9 +7,9 @@ import org.apache.commons.text.StringEscapeUtils;
 /**
  * @author victorchu
  */
+@Getter
 public class CharacterRangeEdge implements Edge
 {
-    @Getter
     protected Character from;
     @Getter
     protected Character to;

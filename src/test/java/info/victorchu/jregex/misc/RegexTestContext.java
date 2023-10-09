@@ -1,18 +1,12 @@
-package info.victorchu.jregex.util;
+package info.victorchu.jregex.misc;
 
-import info.victorchu.jregex.automata.State;
 import info.victorchu.jregex.automata.StateManager;
-import info.victorchu.jregex.automata.Transition;
-import info.victorchu.jregex.automata.dfa.DFAGraph;
 import lombok.Getter;
 import org.hamcrest.Matcher;
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author victorchu

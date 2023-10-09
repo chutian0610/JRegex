@@ -1,7 +1,7 @@
 package info.victorchu.jregex.automata.dfa;
 
 import com.google.common.collect.Lists;
-import info.victorchu.jregex.util.RegexTestContext;
+import info.victorchu.jregex.misc.RegexTestContext;
 import info.victorchu.jregex.ast.RegexExp;
 import info.victorchu.jregex.ast.RegexParser;
 import info.victorchu.jregex.automata.nfa.NFAGraph;
@@ -9,12 +9,10 @@ import info.victorchu.jregex.automata.state.GenericStateManager;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static info.victorchu.jregex.util.RegexTestContext.containsInAnyOrder;
+import static info.victorchu.jregex.misc.RegexTestContext.containsInAnyOrder;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
