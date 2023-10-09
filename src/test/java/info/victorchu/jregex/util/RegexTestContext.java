@@ -1,4 +1,4 @@
-package info.victorchu.jregex.misc;
+package info.victorchu.jregex.util;
 
 import info.victorchu.jregex.automata.StateManager;
 import lombok.Getter;

@@ -4,7 +4,7 @@ import info.victorchu.jregex.ast.RegexExp;
 import info.victorchu.jregex.ast.RegexParser;
 import info.victorchu.jregex.automata.nfa.NFAGraph;
 import info.victorchu.jregex.automata.state.GenericStateManager;
-import info.victorchu.jregex.misc.RegexTestContext;
+import info.victorchu.jregex.util.RegexTestContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

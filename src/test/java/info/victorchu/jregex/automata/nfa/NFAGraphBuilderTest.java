@@ -5,7 +5,7 @@ import info.victorchu.jregex.ast.RegexExp;
 import info.victorchu.jregex.ast.RegexParser;
 import info.victorchu.jregex.automata.state.GenericStateManager;
 import info.victorchu.jregex.misc.RegexExpTreeFormatter;
-import info.victorchu.jregex.misc.RegexTestContext;
+import info.victorchu.jregex.util.RegexTestContext;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.List;
 
-import static info.victorchu.jregex.misc.RegexTestContext.containsInAnyOrder;
+import static info.victorchu.jregex.util.RegexTestContext.containsInAnyOrder;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
