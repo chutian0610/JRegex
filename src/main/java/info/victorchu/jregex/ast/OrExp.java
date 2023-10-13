@@ -31,4 +31,10 @@ public class OrExp
     {
         return visitor.visitOr(this, context);
     }
+
+    @Override
+    public String toString()
+    {
+        return "[Or]";
+    }
 }

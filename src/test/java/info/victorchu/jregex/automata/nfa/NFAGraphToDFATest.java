@@ -6,7 +6,9 @@ import info.victorchu.jregex.ast.RegexExp;
 import info.victorchu.jregex.ast.RegexParser;
 import info.victorchu.jregex.automata.dfa.DFAGraph;
 import info.victorchu.jregex.automata.state.GenericStateManager;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +21,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 /**
  * @author victorchu
  */
+@DisplayName("NFA to DFA测试")
+@Slf4j
 class NFAGraphToDFATest
 {
-    private static final Logger log = LoggerFactory.getLogger(NFAGraphToDFATest.class);
 
     private static final RegexTestContext regexContext = new RegexTestContext(new GenericStateManager());
 

@@ -8,6 +8,7 @@ import info.victorchu.jregex.misc.RegexExpTreeFormatter;
 import info.victorchu.jregex.util.RegexTestContext;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @author victorchu
  */
 @Slf4j
+@DisplayName("NFA构建测试")
 class NFAGraphBuilderTest {
 
     private static final RegexTestContext regexContext = new RegexTestContext(new GenericStateManager());

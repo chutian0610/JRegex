@@ -2,12 +2,14 @@ package info.victorchu.jregex.ast;
 
 import info.victorchu.jregex.misc.RegexExpTreeFormatter;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+@DisplayName("语法解析测试")
 class RegexParserTest {
     private static final Logger log = LoggerFactory.getLogger(RegexParserTest.class);
 

@@ -193,9 +193,9 @@ public class RegexExpTreeFormatter
         public String toString()
         {
             if (parent == null) {
-                return RegexExpFormatter.formatter.process(node, null) + "\n";
+                return node.toString() + "\n";
             }
-            StringBuilder nodeStr = new StringBuilder(RegexExpFormatter.formatter.process(node, null) + "\n");
+            StringBuilder nodeStr = new StringBuilder(node.toString() + "\n");
             StackItem cursor = this;
             if (cursor.last) {
                 nodeStr.insert(0, "└──");
@@ -214,48 +214,6 @@ public class RegexExpTreeFormatter
                 cursor = cursor.parent;
             }
             return nodeStr.toString();
-        }
-    }
-
-    public static class RegexExpFormatter
-            implements RegexExpVisitor<String, Void>
-    {
-        public static RegexExpFormatter formatter = new RegexExpFormatter();
-
-        @Override
-        public String visitChar(CharExp node, Void context)
-        {
-            return String.format("[Char:%s]",node.getCharacter());
-        }
-
-        @Override
-        public String visitCharRange(CharRangeExp node, Void context)
-        {
-            return String.format("[CharRange:%s-%s]",node.getFrom(),node.getTo());
-        }
-
-        @Override
-        public String visitCharClass(CharClassExp node, Void context)
-        {
-            return String.format("[CharClass: negative=%s]",node.getNegative());
-        }
-
-        @Override
-        public String visitConcat(ConcatExp node, Void context)
-        {
-            return "[Concat]";
-        }
-
-        @Override
-        public String visitOr(OrExp node, Void context)
-        {
-            return "[Or]";
-        }
-
-        @Override
-        public String visitRepeat(RepeatExp node, Void context)
-        {
-            return String.format("[Repeat:%s]",node.repeatStr());
         }
     }
 }

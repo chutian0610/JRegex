@@ -7,12 +7,14 @@ import info.victorchu.jregex.util.RegexTestContext;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
  * @author victorchu
  */
 @Slf4j
+@DisplayName("NFA匹配测试")
 class NFAGraphMatcherTest
 {
     private static final RegexTestContext regexContext = new RegexTestContext(new GenericStateManager());

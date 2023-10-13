@@ -28,5 +28,11 @@ public class CharExp
     {
         return visitor.visitChar(this, context);
     }
+
+    @Override
+    public String toString()
+    {
+        return String.format("[Char:%s]", getCharacter());
+    }
 }
 

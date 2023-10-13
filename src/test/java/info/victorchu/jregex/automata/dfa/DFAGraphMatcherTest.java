@@ -5,8 +5,10 @@ import info.victorchu.jregex.ast.RegexParser;
 import info.victorchu.jregex.automata.nfa.NFAGraph;
 import info.victorchu.jregex.automata.state.GenericStateManager;
 import info.victorchu.jregex.util.RegexTestContext;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,10 +16,10 @@ import org.slf4j.LoggerFactory;
 /**
  * @author victorchu
  */
+@DisplayName("DFA匹配测试")
+@Slf4j
 class DFAGraphMatcherTest
 {
-    private static final Logger log = LoggerFactory.getLogger(DFAGraphMatcherTest.class);
-
     private static final RegexTestContext regexContext = new RegexTestContext(new GenericStateManager());
 
     @BeforeEach

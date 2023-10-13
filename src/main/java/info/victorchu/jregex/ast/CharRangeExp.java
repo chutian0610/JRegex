@@ -25,4 +25,10 @@ public class CharRangeExp  extends RegexCharExp
     {
         return visitor.visitCharRange(this, context);
     }
+
+    @Override
+    public String toString()
+    {
+        return String.format("[CharRange:%s-%s]", getFrom(), getTo());
+    }
 }

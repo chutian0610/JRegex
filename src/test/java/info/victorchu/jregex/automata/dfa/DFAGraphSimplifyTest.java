@@ -8,6 +8,7 @@ import info.victorchu.jregex.automata.nfa.NFAGraph;
 import info.victorchu.jregex.automata.state.GenericStateManager;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @author victorchu
  */
 
+@DisplayName("DFA最小化测试")
 @Slf4j
 public class DFAGraphSimplifyTest
 {

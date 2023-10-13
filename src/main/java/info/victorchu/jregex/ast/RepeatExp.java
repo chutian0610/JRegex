@@ -49,4 +49,10 @@ public class RepeatExp
     {
         return visitor.visitRepeat(this, context);
     }
+
+    @Override
+    public String toString()
+    {
+        return String.format("[Repeat:%s]", repeatStr());
+    }
 }

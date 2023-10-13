@@ -30,4 +30,10 @@ public class CharClassExp extends RegexExp
     {
         return visitor.visitCharClass(this,context);
     }
+
+    @Override
+    public String toString()
+    {
+        return String.format("[CharClass: negative=%s]", getNegative());
+    }
 }

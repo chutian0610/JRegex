@@ -31,5 +31,11 @@ public class ConcatExp
     {
         return visitor.visitConcat(this, context);
     }
+
+    @Override
+    public String toString()
+    {
+        return "[Concat]";
+    }
 }
 
