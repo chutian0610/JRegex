@@ -29,6 +29,7 @@ class DFAGraphMatcherTest
     }
 
     @Test
+    @DisplayName("测试-concat")
     void matches01()
     {
         RegexExp regexExpression = RegexParser.parse("ab");
@@ -40,6 +41,7 @@ class DFAGraphMatcherTest
     }
 
     @Test
+    @DisplayName("测试-concat")
     void matches02()
     {
         RegexExp regexExpression = RegexParser.parse("ab");
@@ -51,6 +53,7 @@ class DFAGraphMatcherTest
     }
 
     @Test
+    @DisplayName("测试-or")
     void matches03()
     {
         RegexExp regexExpression = RegexParser.parse("a|b");
@@ -62,6 +65,7 @@ class DFAGraphMatcherTest
     }
 
     @Test
+    @DisplayName("测试-or")
     void matches04()
     {
         RegexExp regexExpression = RegexParser.parse("a|b");
@@ -73,6 +77,7 @@ class DFAGraphMatcherTest
     }
 
     @Test
+    @DisplayName("测试-repeat *")
     void matchesRepeat01()
     {
         RegexExp regexExpression = RegexParser.parse("a*b");
@@ -84,6 +89,7 @@ class DFAGraphMatcherTest
     }
 
     @Test
+    @DisplayName("测试-repeat *")
     void matchesRepeat02()
     {
         RegexExp regexExpression = RegexParser.parse("a*b");
@@ -95,6 +101,7 @@ class DFAGraphMatcherTest
     }
 
     @Test
+    @DisplayName("测试-repeat +")
     void matchesRepeat03()
     {
         RegexExp regexExpression = RegexParser.parse("a+b");
@@ -106,6 +113,7 @@ class DFAGraphMatcherTest
     }
 
     @Test
+    @DisplayName("测试-repeat +")
     void matchesRepeat04()
     {
         RegexExp regexExpression = RegexParser.parse("a+b");
@@ -117,6 +125,7 @@ class DFAGraphMatcherTest
     }
 
     @Test
+    @DisplayName("测试-repeat {n,m}")
     void matchesRepeat05()
     {
         RegexExp regexExpression = RegexParser.parse("a{2,4}b");
@@ -128,6 +137,7 @@ class DFAGraphMatcherTest
     }
 
     @Test
+    @DisplayName("测试-repeat {n,m}")
     void matchesRepeat06()
     {
         RegexExp regexExpression = RegexParser.parse("a{2,4}b");
@@ -139,6 +149,7 @@ class DFAGraphMatcherTest
     }
 
     @Test
+    @DisplayName("测试-复合表达式")
     void matches07()
     {
         RegexExp regexExpression = RegexParser.parse("(a|b)*abb");
@@ -150,6 +161,7 @@ class DFAGraphMatcherTest
     }
 
     @Test
+    @DisplayName("测试-复合表达式")
     void matches08()
     {
         RegexExp regexExpression = RegexParser.parse("(a|b)*abb");
@@ -161,6 +173,7 @@ class DFAGraphMatcherTest
     }
 
     @Test
+    @DisplayName("测试-复合表达式")
     void matches09()
     {
         RegexExp regexExpression = RegexParser.parse("(a|b)*abb");
@@ -171,6 +184,7 @@ class DFAGraphMatcherTest
         Assertions.assertFalse(dfaGraphMatcher.matches("ababababababaabbb"));
     }
     @Test
+    @DisplayName("测试-字符类")
     void matchesCharClass01()
     {
         RegexExp regexExpression = RegexParser.parse("[a-cA-]{1,3}b");
@@ -179,5 +193,29 @@ class DFAGraphMatcherTest
         DFAGraph minDfa = dfa.simplify();
         DFAGraphMatcher dfaGraphMatcher = new DFAGraphMatcher(minDfa);
         Assertions.assertTrue(dfaGraphMatcher.matches("A-b"));
+    }
+
+    @Test
+    @DisplayName("测试-元字符")
+    void matchesMetaChar01()
+    {
+        RegexExp regexExpression = RegexParser.parse("\\d+b");
+        NFAGraph nfa = NFAGraph.build(regexExpression, regexContext.getStateManager());
+        DFAGraph dfa = nfa.toDFA();
+        DFAGraph minDfa = dfa.simplify();
+        DFAGraphMatcher dfaGraphMatcher = new DFAGraphMatcher(minDfa);
+        Assertions.assertTrue(dfaGraphMatcher.matches("111b"));
+    }
+
+    @Test
+    @DisplayName("测试-元字符")
+    void matchesMetaChar02()
+    {
+        RegexExp regexExpression = RegexParser.parse(".+b");
+        NFAGraph nfa = NFAGraph.build(regexExpression, regexContext.getStateManager());
+        DFAGraph dfa = nfa.toDFA();
+        DFAGraph minDfa = dfa.simplify();
+        DFAGraphMatcher dfaGraphMatcher = new DFAGraphMatcher(minDfa);
+        Assertions.assertTrue(dfaGraphMatcher.matches("aaascbb"));
     }
 }

@@ -10,12 +10,15 @@ import info.victorchu.jregex.automata.dfa.DFAGraph;
 import info.victorchu.jregex.automata.edge.EpsilonEdge;
 import info.victorchu.jregex.automata.state.GenericStateManager;
 import info.victorchu.jregex.automata.Transition;
+import info.victorchu.jregex.misc.CharRanges;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -102,7 +105,7 @@ public class NFAGraph
      */
     private Map<Edge, Set<Integer>> findDFAMoveTable(Set<Integer> nfaSet)
     {
-        Map<Edge, Set<Integer>> res = new HashMap<>();
+        Map<Edge, Set<Integer>> res = new LinkedHashMap<>();
         for (Edge edge : getAllEdgesOfStateSet(nfaSet)) {
             res.put(edge, findDFAMoveSet(nfaSet, edge));
         }
@@ -115,13 +118,17 @@ public class NFAGraph
      * @param nfaSet NFA 状态
      * @return
      */
-    private Set<Edge> getAllEdgesOfStateSet(Set<Integer> nfaSet)
+    private List<Edge> getAllEdgesOfStateSet(Set<Integer> nfaSet)
     {
         // 获取对当前状态集有效的字符集(排除 epsilon)
-        return stateManager.getNfAEdges(nfaSet)
+        return CharRanges.fromEdges(stateManager.getNfAEdges(nfaSet))
+                .expand()
                 .stream()
-                .filter(edge -> edge != EpsilonEdge.INSTANCE)
-                .collect(Collectors.toSet());
+                .map(Edge::fromCharRange)
+                .distinct()
+                .sorted(Comparator.comparing(Object::toString))
+                .collect(Collectors.toList());
+
     }
 
     /**

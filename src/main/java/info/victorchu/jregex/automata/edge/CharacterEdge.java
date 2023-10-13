@@ -25,4 +25,13 @@ public class CharacterEdge
     {
         return String.format("'%s'", StringEscapeUtils.escapeJava(character.toString()));
     }
+
+    @Override
+    public boolean canTrigger(Edge edge)
+    {
+        if (edge instanceof CharacterEdge) {
+            return character.equals(((CharacterEdge) edge).getCharacter());
+        }
+        return false;
+    }
 }

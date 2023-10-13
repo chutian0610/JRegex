@@ -4,6 +4,7 @@ import info.victorchu.jregex.ast.CharClassExp;
 import info.victorchu.jregex.ast.CharExp;
 import info.victorchu.jregex.ast.CharRangeExp;
 import info.victorchu.jregex.ast.ConcatExp;
+import info.victorchu.jregex.ast.MetaCharExp;
 import info.victorchu.jregex.ast.OrExp;
 import info.victorchu.jregex.ast.RegexExp;
 import info.victorchu.jregex.ast.RegexExpVisitor;
@@ -92,6 +93,15 @@ public class RegexExpTreeFormatter
         context.getLeft().push(node, context.getRight());
         context.getLeft().peek().ifPresent(x -> context.getLeft().append(x));
         process(node.getInner(), Pair.of(context.getLeft(), true));
+        context.getLeft().pop();
+        return null;
+    }
+
+    @Override
+    public Object visitMetaChar(MetaCharExp node, Pair<PrintStackContext, Boolean> context)
+    {
+        context.getLeft().push(node, context.getRight());
+        context.getLeft().peek().ifPresent(x -> context.getLeft().append(x));
         context.getLeft().pop();
         return null;
     }

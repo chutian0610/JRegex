@@ -1,6 +1,7 @@
 package info.victorchu.jregex.ast;
 
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.Validate;
 
 import java.util.List;
 
@@ -205,12 +206,19 @@ public class RegexParser
         return CharClassExp.builder().regexCharExpList(regexExps).build();
     }
     private List<RegexCharExp> parseCharClass(){
-        CharExp c = parseCharExp();
+        RegexCharExp c = parseCharExp();
         if (matchChar('-')) {
+            Validate.isTrue(c instanceof CharExp);
             if (peek("]")){
                 return Lists.newArrayList(c,CharExp.builder().character('-').build());
             }else {
-                return Lists.newArrayList(CharRangeExp.builder().from(c.getCharacter()).to(parseCharExp().getCharacter()).build());
+                int pos = position;
+                RegexCharExp charExp = parseCharExp();
+                if (!(charExp instanceof CharExp)) {
+                    throw new IllegalArgumentException("expected simple char at position " + pos);
+                }
+                return Lists.newArrayList(CharRangeExp.builder().from(((CharExp) c).getCharacter()).to(((CharExp) charExp).getCharacter()).build());
+
             }
         }else {
             return Lists.newArrayList(c);
@@ -233,10 +241,38 @@ public class RegexParser
         }
     }
 
-    private CharExp parseCharExp()
+    private RegexCharExp parseCharExp()
     {
-        matchChar('\\');
-        return CharExp.builder().character(next()).build();
+        if (matchChar('\\')) {
+            if (matchChar('d')) {
+                return MetaCharExp.builder().metaName("\\d").build();
+            }
+            if (matchChar('D')) {
+                return MetaCharExp.builder().metaName("\\D").build();
+            }
+            if (matchChar('w')) {
+                return MetaCharExp.builder().metaName("\\w").build();
+            }
+            if (matchChar('W')) {
+                return MetaCharExp.builder().metaName("\\W").build();
+            }
+            if (matchChar('s')) {
+                return MetaCharExp.builder().metaName("\\s").build();
+            }
+            if (matchChar('S')) {
+                return MetaCharExp.builder().metaName("\\S").build();
+            }
+            // 转义字符
+            return CharExp.builder().character(next()).build();
+        }
+        else {
+            if (matchChar('.')) {
+                return MetaCharExp.builder().metaName(".").build();
+            }
+            // 非转义
+            return CharExp.builder().character(next()).build();
+        }
+
     }
 }
 

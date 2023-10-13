@@ -35,7 +35,7 @@ public interface State
 
     default Set<Transition> getTransitionsOfInputEdge(Edge edge)
     {
-        return getTransitions().stream().filter(x -> x.getEdge().equals(edge)).collect(Collectors.toSet());
+        return getTransitions().stream().filter(x -> x.getEdge().canTrigger(edge)).collect(Collectors.toSet());
     }
 
     /**

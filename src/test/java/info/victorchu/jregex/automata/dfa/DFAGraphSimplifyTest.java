@@ -96,4 +96,34 @@ public class DFAGraphSimplifyTest
                 ),
                 containsInAnyOrder(chart));
     }
+
+    @Test
+    void minimizationDFA05()
+    {
+        RegexExp regexExpression = RegexParser.parse("[a-zA-Z]b");
+        NFAGraph nfa = NFAGraph.build(regexExpression, regexContext.getStateManager());
+        DFAGraph dfa = nfa.toDFA();
+        DFAGraph minDfa = dfa.simplify();
+        log.debug("\n================== mini DFA ================\n{}======================================", minDfa.toMermaidJsChart());
+        log.debug(minDfa.printStateMapping());
+        List<String> chart = minDfa.toMermaidJsChartLines();
+        assertThat(
+                Lists.newArrayList("flowchart LR", "s_0(0)-->|\"#0097; - #0122;\"|s_1(1)", "s_1(1)-->|\"#0098;\"|s_2((2))", "s_0(0)-->|\"#0065; - #0090;\"|s_1(1)")
+                , containsInAnyOrder(chart));
+    }
+
+    @Test
+    void minimizationDFA06()
+    {
+        RegexExp regexExpression = RegexParser.parse("\\d+b");
+        NFAGraph nfa = NFAGraph.build(regexExpression, regexContext.getStateManager());
+        DFAGraph dfa = nfa.toDFA();
+        DFAGraph minDfa = dfa.simplify();
+        log.debug("\n================== mini DFA ================\n{}======================================", minDfa.toMermaidJsChart());
+        log.debug(minDfa.printStateMapping());
+        List<String> chart = minDfa.toMermaidJsChartLines();
+        assertThat(
+                Lists.newArrayList("flowchart LR", "s_0(0)-->|\"#0048; - #0057;\"|s_1(1)", "s_1(1)-->|\"#0098;\"|s_2((2))", "s_1(1)-->|\"#0048; - #0057;\"|s_1(1)")
+                , containsInAnyOrder(chart));
+    }
 }

@@ -41,5 +41,11 @@ public enum NodeType
     /**
      * 字符范围
      */
-    REGEX_CHAR_RANGE
+    REGEX_CHAR_RANGE,
+
+    /**
+     * 元字符
+     */
+    REGEX_META_CHAR
+
 }

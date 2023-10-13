@@ -24,11 +24,7 @@ public interface Graph extends MermaidJsChartGenerator
      */
     @Override
     default List<String> toMermaidJsChartLines(){
-        List<String> list = new ArrayList<>();
-        list.add("flowchart LR");
-        Set<Integer> markSet = new HashSet<>();
-        GraphMermaidJSFormatter.INSTANCE.handleState(getStart(), list, markSet);
-        return list;
+        return GraphMermaidJSFormatter.INSTANCE.printLines(this);
     }
 
 

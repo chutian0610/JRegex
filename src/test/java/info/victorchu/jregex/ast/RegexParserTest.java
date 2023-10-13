@@ -13,6 +13,7 @@ import java.io.IOException;
 class RegexParserTest {
     private static final Logger log = LoggerFactory.getLogger(RegexParserTest.class);
 
+    @DisplayName("测试基础功能(concat,or,char,*)")
     @Test
     void parse01()
             throws IOException {
@@ -32,6 +33,7 @@ class RegexParserTest {
     }
 
     @Test
+    @DisplayName("测试解析括号")
     void parse02()
             throws IOException {
         RegexExp regexExp = RegexParser.parse("(A|a)b*c|bc");
@@ -51,6 +53,7 @@ class RegexParserTest {
                 "   └──[Char:c]\n", tree);
     }
     @Test
+    @DisplayName("测试解析字符类")
     void parse03()
             throws IOException {
         RegexExp regexExp = RegexParser.parse("[a-zA-]+b");
@@ -62,6 +65,20 @@ class RegexParserTest {
                 "│     ├──[CharRange:a-z]\n" +
                 "│     ├──[Char:A]\n" +
                 "│     └──[Char:-]\n" +
+                "└──[Char:b]\n", tree);
+    }
+
+    @Test
+    @DisplayName("测试解析元字符")
+    void parse04()
+            throws IOException
+    {
+        RegexExp regexExp = RegexParser.parse("\\d+b");
+        String tree = RegexExpTreeFormatter.format(regexExp);
+        log.debug("\n================== tree ================\n{}======================================", tree);
+        Assertions.assertEquals("[Concat]\n" +
+                "├──[Repeat:+]\n" +
+                "│  └──[MetaChar:\\d]\n" +
                 "└──[Char:b]\n", tree);
     }
 }

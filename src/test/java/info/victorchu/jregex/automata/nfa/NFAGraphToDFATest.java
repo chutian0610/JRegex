@@ -35,6 +35,7 @@ class NFAGraphToDFATest
     }
 
     @Test
+    @DisplayName("测试-Concat")
     void toDFA01()
     {
         RegexExp regexExpression = RegexParser.parse("ab");
@@ -50,6 +51,7 @@ class NFAGraphToDFATest
     }
 
     @Test
+    @DisplayName("测试-Or")
     void toDFA02()
     {
         RegexExp regexExpression = RegexParser.parse("a|b");
@@ -65,6 +67,7 @@ class NFAGraphToDFATest
     }
 
     @Test
+    @DisplayName("测试-Repeat *")
     void toDFA03()
     {
         RegexExp regexExpression = RegexParser.parse("a*b");
@@ -80,6 +83,7 @@ class NFAGraphToDFATest
     }
 
     @Test
+    @DisplayName("测试-复合表达式")
     void toDFA04()
     {
         RegexExp regexExpression = RegexParser.parse("(a|b)*abb");
@@ -94,9 +98,10 @@ class NFAGraphToDFATest
                 containsInAnyOrder(chart));
     }
     @Test
+    @DisplayName("测试-字符类")
     void toDFA05()
     {
-        RegexExp regexExpression = RegexParser.parse("[a-cA-]{1,3}b");
+        RegexExp regexExpression = RegexParser.parse("[a-zA-Z]b");
         NFAGraph nfa = NFAGraph.build(regexExpression, regexContext.getStateManager());
         log.debug("\n================== NFA ================\n{}======================================", nfa.toMermaidJsChart());
         DFAGraph dfa = nfa.toDFA();
@@ -104,7 +109,23 @@ class NFAGraphToDFATest
         log.debug(dfa.printStateMapping());
         List<String> chart = dfa.toMermaidJsChartLines();
         assertThat(
-                Lists.newArrayList("flowchart LR", "s_0(0)-->|\"#0098;\"|s_15(15)", "s_15(15)-->|\"#0097;\"|s_9(9)", "s_9(9)-->|\"#0099;\"|s_8(8)", "s_8(8)-->|\"#0098;\"|s_4((4))", "s_9(9)-->|\"#0098;\"|s_7((7))", "s_7((7))-->|\"#0098;\"|s_4((4))", "s_9(9)-->|\"#0097;\"|s_5(5)", "s_5(5)-->|\"#0098;\"|s_4((4))", "s_9(9)-->|\"#0065;\"|s_6(6)", "s_6(6)-->|\"#0098;\"|s_4((4))", "s_9(9)-->|\"#0045;\"|s_3(3)", "s_3(3)-->|\"#0098;\"|s_4((4))", "s_15(15)-->|\"#0065;\"|s_10(10)", "s_10(10)-->|\"#0099;\"|s_8(8)", "s_10(10)-->|\"#0098;\"|s_7((7))", "s_10(10)-->|\"#0097;\"|s_5(5)", "s_10(10)-->|\"#0065;\"|s_6(6)", "s_10(10)-->|\"#0045;\"|s_3(3)", "s_15(15)-->|\"#0099;\"|s_12(12)", "s_12(12)-->|\"#0099;\"|s_8(8)", "s_12(12)-->|\"#0098;\"|s_7((7))", "s_12(12)-->|\"#0097;\"|s_5(5)", "s_12(12)-->|\"#0065;\"|s_6(6)", "s_12(12)-->|\"#0045;\"|s_3(3)", "s_15(15)-->|\"#0045;\"|s_2(2)", "s_2(2)-->|\"#0099;\"|s_8(8)", "s_2(2)-->|\"#0098;\"|s_7((7))", "s_2(2)-->|\"#0097;\"|s_5(5)", "s_2(2)-->|\"#0065;\"|s_6(6)", "s_2(2)-->|\"#0045;\"|s_3(3)", "s_15(15)-->|\"#0098;\"|s_11((11))", "s_11((11))-->|\"#0099;\"|s_8(8)", "s_11((11))-->|\"#0098;\"|s_7((7))", "s_11((11))-->|\"#0097;\"|s_5(5)", "s_11((11))-->|\"#0065;\"|s_6(6)", "s_11((11))-->|\"#0045;\"|s_3(3)", "s_0(0)-->|\"#0097;\"|s_13(13)", "s_13(13)-->|\"#0097;\"|s_9(9)", "s_13(13)-->|\"#0065;\"|s_10(10)", "s_13(13)-->|\"#0099;\"|s_12(12)", "s_13(13)-->|\"#0045;\"|s_2(2)", "s_13(13)-->|\"#0098;\"|s_11((11))", "s_0(0)-->|\"#0065;\"|s_14(14)", "s_14(14)-->|\"#0097;\"|s_9(9)", "s_14(14)-->|\"#0065;\"|s_10(10)", "s_14(14)-->|\"#0099;\"|s_12(12)", "s_14(14)-->|\"#0045;\"|s_2(2)", "s_14(14)-->|\"#0098;\"|s_11((11))", "s_0(0)-->|\"#0045;\"|s_1(1)", "s_1(1)-->|\"#0097;\"|s_9(9)", "s_1(1)-->|\"#0065;\"|s_10(10)", "s_1(1)-->|\"#0099;\"|s_12(12)", "s_1(1)-->|\"#0045;\"|s_2(2)", "s_1(1)-->|\"#0098;\"|s_11((11))", "s_0(0)-->|\"#0099;\"|s_16(16)", "s_16(16)-->|\"#0097;\"|s_9(9)", "s_16(16)-->|\"#0065;\"|s_10(10)", "s_16(16)-->|\"#0099;\"|s_12(12)", "s_16(16)-->|\"#0045;\"|s_2(2)", "s_16(16)-->|\"#0098;\"|s_11((11))")
+                Lists.newArrayList("flowchart LR", "s_0(0)-->|\"#0097; - #0122;\"|s_3(3)", "s_3(3)-->|\"#0098;\"|s_2((2))", "s_0(0)-->|\"#0065; - #0090;\"|s_1(1)", "s_1(1)-->|\"#0098;\"|s_2((2))")
+                , containsInAnyOrder(chart));
+    }
+
+    @Test
+    @DisplayName("测试-元字符")
+    void toDFA06()
+    {
+        RegexExp regexExpression = RegexParser.parse("\\d+b");
+        NFAGraph nfa = NFAGraph.build(regexExpression, regexContext.getStateManager());
+        log.debug("\n================== NFA ================\n{}======================================", nfa.toMermaidJsChart());
+        DFAGraph dfa = nfa.toDFA();
+        log.debug("\n================== DFA ================\n{}======================================", dfa.toMermaidJsChart());
+        log.debug(dfa.printStateMapping());
+        List<String> chart = dfa.toMermaidJsChartLines();
+        assertThat(
+                Lists.newArrayList("flowchart LR", "s_0(0)-->|\"#0048; - #0057;\"|s_1(1)", "s_1(1)-->|\"#0098;\"|s_2((2))", "s_1(1)-->|\"#0048; - #0057;\"|s_1(1)")
                 , containsInAnyOrder(chart));
     }
 }

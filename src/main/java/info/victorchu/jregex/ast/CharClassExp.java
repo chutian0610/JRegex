@@ -14,7 +14,8 @@ import static info.victorchu.jregex.ast.NodeType.REGEX_CHAR_CLASS;
 @Builder
 @Getter
 @Setter
-public class CharClassExp extends RegexExp
+public class CharClassExp
+        extends RegexExp
 {
     public CharClassExp(List<RegexCharExp> regexCharExpList,Boolean negative)
     {

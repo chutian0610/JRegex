@@ -1,11 +1,15 @@
 package info.victorchu.jregex.misc;
 
+import info.victorchu.jregex.automata.AbstractGraphConsolePrinter;
 import info.victorchu.jregex.automata.Edge;
-import info.victorchu.jregex.automata.Transition;
-import info.victorchu.jregex.automata.edge.CharacterEdge;
-import info.victorchu.jregex.automata.edge.EpsilonEdge;
 import info.victorchu.jregex.automata.State;
+import info.victorchu.jregex.automata.edge.CharacterEdge;
+import info.victorchu.jregex.automata.edge.CharacterRangeEdge;
+import info.victorchu.jregex.automata.edge.EpsilonEdge;
 import lombok.NonNull;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -13,29 +17,21 @@ import java.util.Set;
  * @author victorchu
  */
 public class GraphMermaidJSFormatter
+        extends AbstractGraphConsolePrinter
 {
+
+    @Override
+    protected void traverse(State cursor, List<String> sb)
+    {
+        sb.add("flowchart LR");
+        Set<Integer> markSet = new HashSet<>();
+        traverse(cursor, sb, markSet);
+    }
 
     public static final GraphMermaidJSFormatter INSTANCE = new GraphMermaidJSFormatter();
 
-    public void handleState(State cursor, List<String> sb, Set<Integer> markSet)
+    protected String edge2Str(@NonNull Edge edge)
     {
-        if (cursor != null && !markSet.contains(cursor.getStateId())) {
-            markSet.add(cursor.getStateId());
-            Set<Transition> transitions = cursor.getTransitions();
-            for (Transition transition : transitions) {
-                State state = transition.getState();
-                sb.add(convertState2Line(cursor, transition));
-                handleState(state, sb, markSet);
-            }
-        }
-    }
-
-    protected String convertState2Line(@NonNull State state, @NonNull Transition transition)
-    {
-        return convertState2Node(state) + "-->|" + convertEdge2Str(transition.getEdge()) + "|" + convertState2Node(transition.getState()) + "";
-    }
-
-    protected String convertEdge2Str(Edge edge){
         if(edge instanceof EpsilonEdge){
             return edge.toString();
         }
@@ -44,10 +40,15 @@ public class GraphMermaidJSFormatter
             // html format
             return String.format("\"#%04d;\"",(int)characterEdge.getCharacter());
         }
+        if (edge instanceof CharacterRangeEdge) {
+            CharacterRangeEdge characterRangeEdge = (CharacterRangeEdge) edge;
+            // html format
+            return String.format("\"#%04d; - #%04d;\"", (int) characterRangeEdge.getFrom(), (int) characterRangeEdge.getTo());
+        }
         return edge.toString();
     }
 
-    protected String convertState2Node(@NonNull State state)
+    protected String state2Str(@NonNull State state)
     {
         return state.isAccept() ?
                 String.format("s_%d((%d))", state.getStateId(), state.getStateId()) :

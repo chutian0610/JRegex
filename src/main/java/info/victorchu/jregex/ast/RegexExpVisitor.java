@@ -20,6 +20,8 @@ public interface RegexExpVisitor<T, C>
 
     T visitRepeat(RepeatExp node, C context);
 
+    T visitMetaChar(MetaCharExp node, C context);
+
     // 泛型入口
     default T process(RegexExp node, C context)
     {

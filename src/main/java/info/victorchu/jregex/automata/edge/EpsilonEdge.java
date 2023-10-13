@@ -15,4 +15,10 @@ public enum EpsilonEdge
     {
         return "ϵ";
     }
+
+    @Override
+    public boolean canTrigger(Edge edge)
+    {
+        return edge == INSTANCE;
+    }
 }

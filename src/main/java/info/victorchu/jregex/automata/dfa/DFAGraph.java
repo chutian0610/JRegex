@@ -5,6 +5,7 @@ import info.victorchu.jregex.automata.Edge;
 import info.victorchu.jregex.automata.Graph;
 import info.victorchu.jregex.automata.State;
 import info.victorchu.jregex.automata.StateManager;
+import info.victorchu.jregex.misc.CharRanges;
 import info.victorchu.jregex.misc.Pair;
 import info.victorchu.jregex.automata.Transition;
 import lombok.Getter;
@@ -50,6 +51,21 @@ public class DFAGraph
         return new DFAGraph(start, stateManager, true);
     }
 
+    /**
+     * 获取状态集合的所有有效输入
+     *
+     * @param dfaSet DFA 状态
+     * @return
+     */
+    private Set<Edge> getAllEdgesOfStateSet(Set<Integer> dfaSet)
+    {
+        return CharRanges.fromEdges(stateManager.getDfAEdges(dfaSet))
+                .expand()
+                .stream()
+                .map(Edge::fromCharRange)
+                .collect(Collectors.toSet());
+    }
+
     private State createMinimizationDFAState(Set<Integer> stateSet, Map<Integer, Set<Integer>> dfaStateSetIndexMap)
     {
         // 防止循环递归
@@ -57,7 +73,7 @@ public class DFAGraph
             return stateManager.getMinimizationDFAState(stateSet).get();
         }
         State minState = stateManager.createOrGetMinimizationDFAState(stateSet);
-        stateManager.getDfAEdges(stateSet).forEach(edge -> {
+        getAllEdgesOfStateSet(stateSet).forEach(edge -> {
             stateSet.forEach(item -> {
                 stateManager.tryGetDFAState(item).getTransitionsOfInputEdge(edge).forEach(transition -> {
                     Set<Integer> toStateSet = searchDFAIndexMap(transition.getTargetId(), dfaStateSetIndexMap);
@@ -122,7 +138,7 @@ public class DFAGraph
 
     private Collection<Set<Integer>> trySplit(Set<Integer> set, Map<Integer, Set<Integer>> dfaStateSetIndexMap)
     {
-        for (Edge item : stateManager.getDfAEdges(set)) {
+        for (Edge item : getAllEdgesOfStateSet(set)) {
             // 去向集合 <-> 状态分组
             Map<Set<Integer>, Set<Integer>> mapping = new HashMap<>();
             // 空集状态分组(死状态)

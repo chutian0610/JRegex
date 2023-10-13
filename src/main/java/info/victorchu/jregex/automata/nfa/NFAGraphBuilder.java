@@ -1,10 +1,10 @@
 package info.victorchu.jregex.automata.nfa;
 
-import com.google.common.collect.Lists;
 import info.victorchu.jregex.ast.CharClassExp;
 import info.victorchu.jregex.ast.CharExp;
 import info.victorchu.jregex.ast.CharRangeExp;
 import info.victorchu.jregex.ast.ConcatExp;
+import info.victorchu.jregex.ast.MetaCharExp;
 import info.victorchu.jregex.ast.OrExp;
 import info.victorchu.jregex.ast.RegexExp;
 import info.victorchu.jregex.ast.RegexExpVisitor;
@@ -13,14 +13,15 @@ import info.victorchu.jregex.automata.Edge;
 import info.victorchu.jregex.automata.State;
 import info.victorchu.jregex.automata.StateManager;
 import info.victorchu.jregex.automata.SubGraph;
-import info.victorchu.jregex.misc.CharacterUtil;
+import info.victorchu.jregex.misc.CharRange;
+import info.victorchu.jregex.misc.CharRanges;
+import info.victorchu.jregex.misc.MetaChars;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import static info.victorchu.jregex.misc.CharRanges.fromRegexCharExprs;
 
 /**
  * Thompson algorithm
@@ -46,22 +47,41 @@ public class NFAGraphBuilder
         // 这个节点不会进来，在CharClassExp中会被处理掉
         return null;
     }
+
+    @Override
+    public SubGraph visitMetaChar(MetaCharExp node, StateManager context)
+    {
+        List<CharRange> ranges = MetaChars.getMeta(node.getMetaName());
+        State start = context.createNFAState();
+        for (CharRange r : ranges) {
+            State charState = context.createNFAState();
+            if (r.isSingle()) {
+                start.addTransition(Edge.character(r.getFrom()), charState);
+            }
+            else {
+                start.addTransition(Edge.range(r.getFrom(), r.getTo()), charState);
+            }
+        }
+        State end = context.createNFAState();
+        start.getTransitions().forEach(x -> {
+            x.getState().addTransition(Edge.epsilon(), end);
+        });
+        return SubGraph.of(Edge.epsilon(), start, end);
+    }
     @Override
     public SubGraph visitCharClass(CharClassExp node, StateManager context)
     {
-        Set<Character> characterSet =node.getRegexCharExpList().stream().flatMap(x->{
-            if(x instanceof CharExp){
-                return Stream.of(((CharExp) x).getCharacter());
-            }else if(x instanceof CharRangeExp) {
-                return CharacterUtil.getCharacterRange(((CharRangeExp) x).getFrom(),((CharRangeExp) x).getTo()).stream();
-            }
-            return Stream.empty();
-        }).collect(Collectors.toSet());
-        List<Character> characters = node.getNegative()? CharacterUtil.getComplementaryAscii(characterSet): Lists.newArrayList(characterSet);
+        CharRanges charRanges = fromRegexCharExprs(node.getRegexCharExpList());
+        List<CharRange> ranges = node.getNegative() ? charRanges.negative() : charRanges.reduce();
         State start = context.createNFAState();
-        for (Character c: characters) {
+        for (CharRange r : ranges) {
             State charState = context.createNFAState();
-            start.addTransition(Edge.character(c), charState);
+            if (r.isSingle()) {
+                start.addTransition(Edge.character(r.getFrom()), charState);
+            }
+            else {
+                start.addTransition(Edge.range(r.getFrom(), r.getTo()), charState);
+            }
         }
         State end = context.createNFAState();
         start.getTransitions().forEach(x->{

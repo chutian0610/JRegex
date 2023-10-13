@@ -24,7 +24,7 @@ class CharRangesTest
         charRangeHelper.addSection('d', 'f');
         charRangeHelper.addChar('h');
         charRangeHelper.addSection('x', 'z');
-        List<CharRanges.Range> list = charRangeHelper.reduce();
+        List<CharRange> list = charRangeHelper.reduce();
         Assertions.assertEquals("[[a-f], [h], [x-z]]", list.toString());
     }
 
@@ -37,7 +37,7 @@ class CharRangesTest
         charRangeHelper.addSection('d', 'f');
         charRangeHelper.addChar('h');
         charRangeHelper.addSection('x', 'z');
-        List<CharRanges.Range> list = charRangeHelper.negative();
+        List<CharRange> list = charRangeHelper.negative();
         Assertions.assertEquals("[[\\u0000-`], [g], [i-w], [{-\\uFFFF]]", list.toString());
     }
 
@@ -49,7 +49,7 @@ class CharRangesTest
         charRangeHelper.addSection('a', 'c');
         charRangeHelper.addSection('c', 'e');
         charRangeHelper.addChar('e');
-        List<CharRanges.Range> list = charRangeHelper.expand();
+        List<CharRange> list = charRangeHelper.expand();
         Assertions.assertEquals("[[a-b], [c], [d], [e], [f-z]]", list.toString());
     }
 
@@ -62,7 +62,7 @@ class CharRangesTest
         charRangeHelper.addSection('c', 'e');
         charRangeHelper.addChar('e');
         charRangeHelper.addChar('c');
-        List<CharRanges.Range> list = charRangeHelper.expand();
+        List<CharRange> list = charRangeHelper.expand();
         Assertions.assertEquals("[[a-b], [c], [d], [e], [f-z]]", list.toString());
     }
 
@@ -74,7 +74,7 @@ class CharRangesTest
         charRangeHelper.addSection('B', 'a');
         charRangeHelper.addChar('c');
         charRangeHelper.addChar('天');
-        List<CharRanges.Range> list = charRangeHelper.expand();
+        List<CharRange> list = charRangeHelper.expand();
         Assertions.assertEquals("[[A], [B-a], [b], [c], [d-z], [\\u5929]]", list.toString());
     }
 }

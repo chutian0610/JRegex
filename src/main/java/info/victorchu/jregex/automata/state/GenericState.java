@@ -67,13 +67,6 @@ public class GenericState
     }
 
     @Override
-    public Set<Transition> getTransitionsOfInputEdge(Edge edge)
-    {
-        Set<Transition> set = edge2TransitionMap.get(edge);
-        return set == null ? new HashSet<>() : set;
-    }
-
-    @Override
     public void addTransition(Transition transition)
     {
         if (isDeterministic() && hasTransitionsOfSameEdge(transition)) {

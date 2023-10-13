@@ -266,4 +266,22 @@ class NFAGraphMatcherTest
         NFAGraphMatcher nfaGraphMatcher = new NFAGraphMatcher(nfa);
         Assertions.assertTrue(nfaGraphMatcher.matches("dddb"));
     }
+
+    @Test
+    void matchesMetaChar01()
+    {
+        RegexExp regexExpression = RegexParser.parse("\\d+b");
+        NFAGraph nfa = NFAGraph.build(regexExpression, regexContext.getStateManager());
+        NFAGraphMatcher nfaGraphMatcher = new NFAGraphMatcher(nfa);
+        Assertions.assertTrue(nfaGraphMatcher.matches("111b"));
+    }
+
+    @Test
+    void matchesMetaChar02()
+    {
+        RegexExp regexExpression = RegexParser.parse(".+b");
+        NFAGraph nfa = NFAGraph.build(regexExpression, regexContext.getStateManager());
+        NFAGraphMatcher nfaGraphMatcher = new NFAGraphMatcher(nfa);
+        Assertions.assertTrue(nfaGraphMatcher.matches("111ab"));
+    }
 }

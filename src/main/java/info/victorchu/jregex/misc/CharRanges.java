@@ -2,12 +2,20 @@ package info.victorchu.jregex.misc;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import info.victorchu.jregex.ast.CharExp;
+import info.victorchu.jregex.ast.CharRangeExp;
+import info.victorchu.jregex.ast.MetaCharExp;
+import info.victorchu.jregex.ast.RegexCharExp;
+import info.victorchu.jregex.automata.Edge;
+import info.victorchu.jregex.automata.edge.CharacterEdge;
+import info.victorchu.jregex.automata.edge.CharacterRangeEdge;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.text.StringEscapeUtils;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -25,11 +33,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CharRanges
 {
-    private final Set<Range> rangeSet = new HashSet<>();
+    private final Set<CharRange> rangeSet = new HashSet<>();
 
     @Data
     @AllArgsConstructor
-    public static class RangeSplitter
+    public static class Splitter
     {
         char v;
         boolean start;
@@ -46,85 +54,94 @@ public class CharRanges
         }
     }
 
-    @Data
-    @AllArgsConstructor
-    public static class Range
+    public static CharRanges of(Collection<CharRange> ranges)
     {
-        char from;
-        char to;
+        CharRanges charRanges = new CharRanges();
+        charRanges.addRanges(ranges);
+        return charRanges;
+    }
 
-        public boolean isSingle()
-        {
-            return from == to;
+    public static CharRanges fromRegexCharExprs(Collection<RegexCharExp> exps)
+    {
+        CharRanges charRanges = new CharRanges();
+        if (exps != null && !exps.isEmpty()) {
+            exps.forEach(x -> {
+                if (x instanceof CharExp) {
+                    charRanges.addChar(((CharExp) x).getCharacter());
+                }
+                else if (x instanceof CharRangeExp) {
+                    charRanges.addSection(((CharRangeExp) x).getFrom(), ((CharRangeExp) x).getTo());
+                }
+                else if (x instanceof MetaCharExp) {
+                    charRanges.addRanges(MetaChars.getMeta(((MetaCharExp) x).getMetaName()));
+                }
+            });
         }
+        return charRanges;
+    }
 
-        private static Range of(RangeSplitter start, RangeSplitter end)
-        {
-            return new Range(start.v, end.v);
+    public static CharRanges fromEdges(Collection<Edge> edges)
+    {
+        CharRanges charRanges = new CharRanges();
+        if (edges != null && !edges.isEmpty()) {
+            edges.forEach(x -> {
+                if (x instanceof CharacterEdge) {
+                    charRanges.addChar(((CharacterEdge) x).getCharacter());
+                }
+                else if (x instanceof CharacterRangeEdge) {
+                    charRanges.addSection(((CharacterRangeEdge) x).getFrom()
+                            , ((CharacterRangeEdge) x).getTo());
+                }
+            });
         }
+        return charRanges;
+    }
 
-        private static List<RangeSplitter> toSplit(Range range)
-        {
-            return Lists.newArrayList(new RangeSplitter(range.from, true), new RangeSplitter(range.to, false));
-        }
-
-        @Override
-        public String toString()
-        {
-            if (from == to) {
-                return String.format("[%s]", StringEscapeUtils.escapeJava(String.valueOf(from)));
-            }
-            else {
-                return String.format("[%s-%s]", StringEscapeUtils.escapeJava(String.valueOf(from)), StringEscapeUtils.escapeJava(String.valueOf(to)));
-            }
-        }
-
-        /**
-         * 判断两个区间是否可以merge(相交或相邻).
-         *
-         * <pre>
-         *     1. [a-d] & [b-c]: 相交区间 可以merge
-         *     2. [a-c] & [d-f]: 由于是离散区间，所以相邻的区间也可以merge)
-         * </pre>
-         *
-         * @param left
-         * @param right
-         * @return
-         */
-        public static boolean canMerge(Range left, Range right)
-        {
-            if (left == null || right == null) {
-                return false;
-            }
-            if (left.from <= right.from) {
-                return isRangeIntersect(left, right) || isRangeAdjacent(left, right);
-            }
-            else {
-                return isRangeIntersect(right, left) || isRangeAdjacent(right, left);
-            }
-        }
-
-        private static boolean isRangeIntersect(Range left, Range right)
-        {
-            return right.from <= left.to;
-        }
-
-        private static boolean isRangeAdjacent(Range left, Range right)
-        {
-            // [a-c] [d-e]
-            if (right.from == (left.to + 1)) {
-                return true;
-            }
-
+    /**
+     * 判断两个区间是否可以merge(相交或相邻).
+     *
+     * <pre>
+     *     1. [a-d] & [b-c]: 相交区间 可以merge
+     *     2. [a-c] & [d-f]: 由于是离散区间，所以相邻的区间也可以merge)
+     * </pre>
+     *
+     * @param left
+     * @param right
+     * @return
+     */
+    public static boolean canMerge(CharRange left, CharRange right)
+    {
+        if (left == null || right == null) {
             return false;
         }
-
-        public static Range merge(Range left, Range right)
-        {
-            char from = right.from <= left.from ? right.from : left.from;
-            char to = right.to >= left.to ? right.to : left.to;
-            return new Range(from, to);
+        if (left.from <= right.from) {
+            return isRangeIntersect(left, right) || isRangeAdjacent(left, right);
         }
+        else {
+            return isRangeIntersect(right, left) || isRangeAdjacent(right, left);
+        }
+    }
+
+    private static boolean isRangeIntersect(CharRange left, CharRange right)
+    {
+        return right.from <= left.to;
+    }
+
+    private static boolean isRangeAdjacent(CharRange left, CharRange right)
+    {
+        // [a-c] [d-e]
+        if (right.from == (left.to + 1)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static CharRange merge(CharRange left, CharRange right)
+    {
+        char from = right.from <= left.from ? right.from : left.from;
+        char to = right.to >= left.to ? right.to : left.to;
+        return new CharRange(from, to);
     }
 
     /**
@@ -146,8 +163,14 @@ public class CharRanges
     public void addSection(char from, char to)
     {
         Validate.isTrue(from <= to);
-        Range range = new Range(from, to);
-        rangeSet.add(range);
+        CharRange CharRange = new CharRange(from, to);
+        rangeSet.add(CharRange);
+    }
+
+    public void addRanges(Collection<CharRange> charRange)
+    {
+        Validate.isTrue(charRange != null);
+        rangeSet.addAll(charRange);
     }
 
     /**
@@ -155,28 +178,28 @@ public class CharRanges
      *
      * @return
      */
-    public List<Range> negative()
+    public List<CharRange> negative()
     {
         if (rangeSet.isEmpty()) {
-            return Lists.newArrayList(new Range(Character.MIN_VALUE, Character.MAX_VALUE));
+            return Lists.newArrayList(new CharRange(Character.MIN_VALUE, Character.MAX_VALUE));
         }
-        // reduce后的 range list
-        List<Range> reduced = reduce();
-        LinkedList<RangeSplitter> negative = Lists.newLinkedList();
-        LinkedList<Range> ranges = Lists.newLinkedList();
-        reduced.forEach(x -> Range.toSplit(x).forEach(negative::push));
-        RangeSplitter previous = null;
-        RangeSplitter current = null;
+        // reduce后的 CharRange list
+        List<CharRange> reduced = reduce();
+        LinkedList<Splitter> negative = Lists.newLinkedList();
+        LinkedList<CharRange> ranges = Lists.newLinkedList();
+        reduced.forEach(x -> x.toSplit().forEach(negative::push));
+        Splitter previous = null;
+        Splitter current = null;
         while (negative.peekLast() != null) {
             current = negative.removeLast();
             if (current.start) {
                 if (previous == null) {
                     if (current.v != Character.MIN_VALUE) {
-                        ranges.push(new Range(Character.MIN_VALUE, previous(current.v)));
+                        ranges.push(new CharRange(Character.MIN_VALUE, previous(current.v)));
                     }
                 }
                 else {
-                    ranges.push(new Range(next(previous.v), previous(current.v)));
+                    ranges.push(new CharRange(next(previous.v), previous(current.v)));
                 }
             }
             previous = current;
@@ -184,7 +207,7 @@ public class CharRanges
         // handle end
         if (!Objects.requireNonNull(current).start) {
             if (current.v != Character.MAX_VALUE) {
-                ranges.push(new Range(next(current.v), Character.MAX_VALUE));
+                ranges.push(new CharRange(next(current.v), Character.MAX_VALUE));
             }
         }
         Collections.reverse(ranges);
@@ -194,24 +217,24 @@ public class CharRanges
     /**
      * reduce优化
      *
-     * @return reduced range list (sorted)
+     * @return reduced CharRange list (sorted)
      */
-    public List<Range> reduce()
+    public List<CharRange> reduce()
     {
         if (rangeSet.isEmpty()) {
             return Lists.newArrayList();
         }
-        LinkedList<Range> ranges = rangeSet.stream()
-                .sorted(Comparator.comparing(Range::getFrom))
+        LinkedList<CharRange> ranges = rangeSet.stream()
+                .sorted(Comparator.comparing(CharRange::getFrom))
                 .collect(Collectors.toCollection(LinkedList::new));
-        LinkedList<Range> reduced = Lists.newLinkedList();
-        for (Range current : ranges) {
+        LinkedList<CharRange> reduced = Lists.newLinkedList();
+        for (CharRange current : ranges) {
             if (reduced.peek() == null) {
                 reduced.push(current);
             }
             else {
-                if (Range.canMerge(reduced.peek(), current)) {
-                    Range merged = Range.merge(
+                if (canMerge(reduced.peek(), current)) {
+                    CharRange merged = merge(
                             Objects.requireNonNull(reduced.peek()), current);
                     reduced.pop();
                     reduced.push(merged);
@@ -228,29 +251,29 @@ public class CharRanges
     /**
      * 拆分为互不重叠的子集
      *
-     * @return expanded range list
+     * @return expanded CharRange list
      */
-    public List<Range> expand()
+    public List<CharRange> expand()
     {
         if (rangeSet.isEmpty()) {
             return Lists.newArrayList();
         }
-        LinkedList<Range> ranges = rangeSet.stream()
-                .sorted(Comparator.comparing(Range::getFrom))
+        LinkedList<CharRange> ranges = rangeSet.stream()
+                .sorted(Comparator.comparing(CharRange::getFrom))
                 .collect(Collectors.toCollection(LinkedList::new));
-        LinkedList<RangeSplitter> expand = new LinkedList<>();
-        LinkedList<RangeSplitter> stack = new LinkedList<>();
-        List<Range> result = Lists.newArrayList();
-        for (Range range : ranges) {
-            insertRange(expand, stack, range);
+        LinkedList<Splitter> expand = new LinkedList<>();
+        LinkedList<Splitter> stack = new LinkedList<>();
+        List<CharRange> result = Lists.newArrayList();
+        for (CharRange CharRange : ranges) {
+            insertRange(expand, stack, CharRange);
         }
-        RangeSplitter previous = null;
-        RangeSplitter current = null;
+        Splitter previous = null;
+        Splitter current = null;
         while (expand.peekLast() != null) {
             current = expand.removeLast();
             validateSplitter(previous, current);
             if (!current.start) {
-                result.add(new Range(Objects.requireNonNull(previous).v, current.v));
+                result.add(new CharRange(Objects.requireNonNull(previous).v, current.v));
             }
             previous = current;
         }
@@ -258,7 +281,7 @@ public class CharRanges
         return result;
     }
 
-    private static void validateSplitter(RangeSplitter previous, RangeSplitter current)
+    private static void validateSplitter(Splitter previous, Splitter current)
     {
         Preconditions.checkArgument(current != null);
         if (previous == null) {
@@ -269,53 +292,53 @@ public class CharRanges
         }
     }
 
-    public static void insertRange(LinkedList<RangeSplitter> expand, LinkedList<RangeSplitter> stack, Range range)
+    public static void insertRange(LinkedList<Splitter> expand, LinkedList<Splitter> stack, CharRange charRange)
     {
         if (expand.isEmpty()) {
-            Range.toSplit(range).forEach(x -> pushSplitter(expand, x));
+            charRange.toSplit().forEach(x -> pushSplitter(expand, x));
             return;
         }
-        if (expand.peek().v < range.from) {
+        if (expand.peek().v < charRange.from) {
             // 不相交
-            Range.toSplit(range).forEach(x -> pushSplitter(expand, x));
+            charRange.toSplit().forEach(x -> pushSplitter(expand, x));
             return;
         }
         stack.clear();
-        RangeSplitter end = expand.pop();
+        Splitter end = expand.pop();
         stack.push(end);
 
         // 找到range.from 应该存放的位置
-        while (!expand.isEmpty() && expand.peek().v > range.from) {
-            RangeSplitter splitter = expand.pop();
+        while (!expand.isEmpty() && expand.peek().v > charRange.from) {
+            Splitter splitter = expand.pop();
             stack.push(splitter);
         }
         if (expand.isEmpty()) {
-            // range.from 应该存放在最开头
-            pushSplitter(expand, new RangeSplitter(range.from, true));
+            // CharRange.from 应该存放在最开头
+            pushSplitter(expand, new Splitter(charRange.from, true));
             // 插入range.to
-            insertRangeEnd(expand, stack, range);
+            insertRangeEnd(expand, stack, charRange);
         }
         else {
-            pushSplitter(expand, new RangeSplitter(range.from, true));
+            pushSplitter(expand, new Splitter(charRange.from, true));
             // 插入range.to
-            insertRangeEnd(expand, stack, range);
+            insertRangeEnd(expand, stack, charRange);
         }
     }
 
-    private static void pushSplitter(LinkedList<RangeSplitter> expand, RangeSplitter splitter)
+    private static void pushSplitter(LinkedList<Splitter> expand, Splitter splitter)
     {
         if (expand.isEmpty()) {
             if (splitter.start) {
                 expand.push(splitter);
             }
             else {
-                expand.push(new RangeSplitter(Character.MIN_VALUE, true));
-                expand.push(new RangeSplitter(splitter.v == Character.MIN_VALUE ? Character.MIN_VALUE : previous(splitter.v), false));
+                expand.push(new Splitter(Character.MIN_VALUE, true));
+                expand.push(new Splitter(splitter.v == Character.MIN_VALUE ? Character.MIN_VALUE : previous(splitter.v), false));
                 expand.push(splitter);
             }
             return;
         }
-        RangeSplitter pre = expand.peek();
+        Splitter pre = expand.peek();
         if (pre.v > splitter.v) {
             return;
         }
@@ -332,18 +355,18 @@ public class CharRanges
                         expand.pop();
                     }
                     if (expand.isEmpty()) {
-                        expand.push(new RangeSplitter(pre.v, true));
-                        expand.push(new RangeSplitter(pre.v, false));
+                        expand.push(new Splitter(pre.v, true));
+                        expand.push(new Splitter(pre.v, false));
                     }
                     else {
                         if (expand.peek().isStart()) {
-                            expand.push(new RangeSplitter(previous(pre.v), false));
-                            expand.push(new RangeSplitter(pre.v, true));
-                            expand.push(new RangeSplitter(pre.v, false));
+                            expand.push(new Splitter(previous(pre.v), false));
+                            expand.push(new Splitter(pre.v, true));
+                            expand.push(new Splitter(pre.v, false));
                         }
                         else {
-                            expand.push(new RangeSplitter(pre.v, true));
-                            expand.push(new RangeSplitter(pre.v, false));
+                            expand.push(new Splitter(pre.v, true));
+                            expand.push(new Splitter(pre.v, false));
                         }
                     }
                 }
@@ -355,7 +378,7 @@ public class CharRanges
                 expand.push(splitter);
             }
             else {
-                expand.push(new RangeSplitter(previous(splitter.v), false));
+                expand.push(new Splitter(previous(splitter.v), false));
                 expand.push(splitter);
             }
         }
@@ -364,30 +387,30 @@ public class CharRanges
                 expand.push(splitter);
             }
             else {
-                expand.push(new RangeSplitter(next(pre.v), true));
+                expand.push(new Splitter(next(pre.v), true));
                 expand.push(splitter);
             }
         }
     }
 
-    public static void insertRangeEnd(LinkedList<RangeSplitter> expand, LinkedList<RangeSplitter> stack, Range range)
+    public static void insertRangeEnd(LinkedList<Splitter> expand, LinkedList<Splitter> stack, CharRange CharRange)
     {
         boolean pushed = false;
         while (!stack.isEmpty()) {
-            RangeSplitter splitter = stack.pop();
-            if (splitter.v <= range.to) {
+            Splitter splitter = stack.pop();
+            if (splitter.v <= CharRange.to) {
                 pushSplitter(expand, splitter);
             }
             else {
                 if (!pushed) {
-                    pushSplitter(expand, new RangeSplitter(range.to, false));
+                    pushSplitter(expand, new Splitter(CharRange.to, false));
                     pushed = true;
                 }
                 pushSplitter(expand, splitter);
             }
         }
         if (!pushed) {
-            pushSplitter(expand, new RangeSplitter(range.to, false));
+            pushSplitter(expand, new Splitter(CharRange.to, false));
         }
     }
 
