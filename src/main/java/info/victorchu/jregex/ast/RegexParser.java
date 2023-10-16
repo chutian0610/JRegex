@@ -23,14 +23,14 @@ import java.util.List;
  *              | {@literal <charclassesexp>}
  * {@literal <charclassesexp>} := '[' {@literal <charclasses>} ']'
  *              | '[' '^' {@literal <charclasses>} ']'
- *              | {@literal <atomexp}
+ *              | {@literal <atomexp>}
  *  {@literal <charclasses>} := {@literal <charclass>} {@literal <charclasses>}
  *              | {@literal <charclass>}
  *  {@literal <charclass>} := {@literal <charexp>} '-' {@literal <charexp>}
  *              | {@literal <charexp>}
  *  {@literal <atomexp>} := {@literal <charexp>}
  *              | '(' {@literal <unionexp>} ')'
- * {@literal <charexp>} ::= {@literal <Meta character>}
+ * {@literal <charexp>} := {@literal <Meta character>}
  *              | {@literal <Unicode character>}
  *              | '\' {@literal <Unicode character>}
  * </pre>
