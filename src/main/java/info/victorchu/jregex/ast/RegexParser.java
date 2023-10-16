@@ -11,12 +11,12 @@ import java.util.List;
  * <pre>
  * bnf 语法，递归下降
  *
- * {@literal <regex>} ::= {@literal <unionexp>}
- * {@literal <unionexp>} ::= {@literal <concatexp>} '|' {@literal <unionexp>}
+ * {@literal <regex>} := {@literal <unionexp>}
+ * {@literal <unionexp>} := {@literal <concatexp>} '|' {@literal <unionexp>}
  *              | {@literal <concatexp>}
- * {@literal <concatexp>} ::= {@literal <repeatexp>} {@literal <concatexp>}
+ * {@literal <concatexp>} := {@literal <repeatexp>} {@literal <concatexp>}
  *              | {@literal <repeatexp>}
- * {@literal <concatexp>} ::= {@literal <repeatexp>} ('*' | '+' |'?')
+ * {@literal <concatexp>} := {@literal <repeatexp>} ('*' | '+' |'?')
  *              | {@literal <repeatexp>} '{' {@literal <number>} '}'
  *              | {@literal <repeatexp>} '{' {@literal <number>} ',' '}'
  *              | {@literal <repeatexp>} '{' {@literal <number>} ',' {@literal <number>} '}'
@@ -27,10 +27,12 @@ import java.util.List;
  *  {@literal <charclasses>} := {@literal <charclass>} {@literal <charclasses>}
  *              | {@literal <charclass>}
  *  {@literal <charclass>} := {@literal <charexp>} '-' {@literal <charexp>}
- *             | {@literal <charexp>}
+ *              | {@literal <charexp>}
  *  {@literal <atomexp>} := {@literal <charexp>}
- *               | '(' {@literal <unionexp>} ')'
- * {@literal <charexp>} ::= {@literal <Unicode character>} | '\' {@literal <Unicode character>}
+ *              | '(' {@literal <unionexp>} ')'
+ * {@literal <charexp>} ::= {@literal <Meta character>}
+ *              | {@literal <Unicode character>}
+ *              | '\' {@literal <Unicode character>}
  * </pre>
  * <p>
  * 将正则语法解析为AST Node.
