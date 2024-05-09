@@ -1,0 +1,100 @@
+package io.github.chutian0610.jregex.automata.state;
+
+import com.google.common.collect.Sets;
+import io.github.chutian0610.jregex.automata.Edge;
+import io.github.chutian0610.jregex.automata.State;
+import io.github.chutian0610.jregex.automata.Transition;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * @author victorchu
+ */
+@Getter
+@Slf4j
+@ToString(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public class GenericState
+        implements State
+{
+    /**
+     * {@code @Immutable}
+     */
+    @EqualsAndHashCode.Include
+    @ToString.Include
+    private final int stateId;
+    @Setter
+    private boolean accept;
+    /**
+     * {@code @Immutable}
+     */
+    private final boolean deterministic;
+
+    /**
+     * hold Transition
+     */
+    private final Set<Transition> transitionSet = new HashSet<>();
+    /**
+     * fast index edge -> Transition
+     */
+    private final Map<Edge, Set<Transition>> edge2TransitionMap = new HashMap<>();
+
+    public GenericState(int stateId, boolean deterministic)
+    {
+        this.stateId = stateId;
+        this.deterministic = deterministic;
+    }
+
+    public GenericState(int stateId, boolean deterministic, boolean accept)
+    {
+        this.stateId = stateId;
+        this.deterministic = deterministic;
+        this.accept = accept;
+    }
+
+    @Override
+    public Set<Transition> getTransitions()
+    {
+        return transitionSet;
+    }
+
+    @Override
+    public void addTransition(Transition transition)
+    {
+        if (isDeterministic() && hasTransitionsOfSameEdge(transition)) {
+            log.error("transition must deterministic, insert:{} , already exists: {}",
+                    transition, edge2TransitionMap.get(transition.getEdge()));
+            throw new UnsupportedOperationException("transition must deterministic");
+        }
+        transitionSet.add(transition);
+        indexEdgeTransitionMap(transition);
+    }
+
+    private void indexEdgeTransitionMap(Transition transition)
+    {
+        if (edge2TransitionMap.containsKey(transition.getEdge())) {
+            Set<Transition> set = edge2TransitionMap.get(transition.getEdge());
+            set.add(transition);
+        }
+        else {
+            edge2TransitionMap.put(transition.getEdge(), Sets.newHashSet(transition));
+        }
+    }
+
+    @Override
+    public boolean hasTransitionsOfSameEdge(Transition transition)
+    {
+        if (edge2TransitionMap.containsKey(transition.getEdge())) {
+            return edge2TransitionMap.get(transition.getEdge()).stream().anyMatch(x -> !x.equals(transition));
+        }
+        return false;
+    }
+}

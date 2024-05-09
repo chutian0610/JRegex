@@ -10,7 +10,7 @@ mvn clean package -Dorg.slf4j.simpleLogger.defaultLogLevel=info
 
 ## Feature
 
-* 将正则表达式解析为语法树
+* Regex => AST
 
 ```
 RegexExp regexExp=RegexParser.parse("(a|b)*abb");
@@ -30,14 +30,14 @@ log.info(RegexExpTreeFormatter.format(regexExp));
       └──[Char:b]
 ```
 
-* 使用Thompson构造法从语法树构建NFA
+* AST => NFA(thompson construction)
 
 ```
 NFAGraph nfaGraph=NFAGraph.build(regexExp);
 log.info(nfaGraph.toMermaidJsChart());
 ```
 
-打印Mermaid流程图
+NFA Chart(using mermaid.js)
 
 ```mermaid
 flowchart LR
@@ -59,16 +59,16 @@ flowchart LR
     s_3(3) -->|ϵ| s_6(6)
 ```
 
-* 使用子集构造法从NFA构造DFA
+* NFA => DFA (Subset Construction)
 
 ```
 DFAGraph dfa=nfa.toDFA();
 log.info(dfa.toMermaidJsChart());
-// 状态映射
+// state mappings
 log.info(dfa.printStateMapping());
 ```
 
-DFA流程图
+DFA Chart(using mermaid.js)
 
 ```mermaid
 flowchart LR
@@ -84,7 +84,7 @@ flowchart LR
     s_0(0) -->|'a'| s_1(1)
 ```
 
-状态映射
+state mappings
 
 ```
 <<<<<<<<<<<< NFA -> DFA >>>>>>>>>>>>>
@@ -95,16 +95,16 @@ s_2<==>(s_5,s_6,s_7,s_8,s_11,s_12,s_1,s_2,s_4)
 s_3<==>(s_5,s_6,s_7,s_8,s_13,s_1,s_2,s_4)
 ```
 
-* DFA化简
+* DFA minimization
 
 ```
 DFAGraph minDfa=dfa.simplify();
 log.info(minDfa.toMermaidJsChart());
-// 状态映射
+// state mappings
 log.info(minDfa.printStateMapping());
 ```
 
-min DFA状态
+min DFA state(using mermaid.js)
 
 ```mermaid
 flowchart LR
@@ -118,7 +118,7 @@ flowchart LR
     s_1(1) -->|'a'| s_1(1)
 ```
 
-状态映射:
+state mappings
 
 ```
 s_0<==>(s_0,s_4)
@@ -127,7 +127,7 @@ s_2<==>(s_2)
 s_3<==>(s_3)
 ```
 
-* NFA 模拟执行
+* NFA execution
 
 ```
 void matches(){
@@ -138,7 +138,7 @@ void matches(){
 }
 ```
 
-* DFA 模拟执行
+* DFA execution
 
 ```
 void matches(){
@@ -151,29 +151,28 @@ void matches(){
 }
 ```
 
-## 支持的语法
+## Supported Syntax
 
-- unicode 字符
-- 或 `|`
-- 连接
-- 括号()
-- 重复
+- or `|`
+- concat
+- ()
+- repeat
   - `*`
   - `+`
   - `?`
   - `{n,m}`
   - `{n}`
   - `{n,}`
-- 字符类
+- char group
   - `[]`
   - `[^]`
-- 字符区间
+- char range
   - a-z
-- 单个字符
-  - 非转义字符
-  - \ 转义字符
-- 元字符
-  - \d \D
-  - \w \W
-  - \s \S
-  - .
+- single char(unicode char)
+  - non-escaped char
+  - escape char( escaped by '\')
+- meta char
+  - \d \D  => [0-9]
+  - \w \W  => [a-zA-Z0-9_]
+  - \s \S  => [ \t\n\x0B\f\r]
+  - . => [all chars]
