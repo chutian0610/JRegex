@@ -170,7 +170,7 @@ void matches(){
   - a-z
 - single char(unicode char)
   - non-escaped char
-  - escape char( escaped by '\')
+  - escape char( escaped by `\`)
 - meta char
   - \d \D  => [0-9]
   - \w \W  => [a-zA-Z0-9_]
